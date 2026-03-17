@@ -18,25 +18,27 @@
         }
         .container { max-width: 900px; margin: auto; background: var(--card-bg); padding: 25px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
         
-        /* Überschrift Styling: FlightClub (Gold) Manager (Weiß) */
         h1 { text-align: center; white-space: nowrap; margin-bottom: 30px; }
         h1 .fc-gold { background: linear-gradient(to bottom, #fff, var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         h1 .mg-white { color: #ffffff; }
-        
         h2 span { background: linear-gradient(to bottom, #fff, var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* Handy-Optimierung für die Überschrift */
-        @media (max-width: 480px) {
-            h1 { font-size: 1.5rem; }
-        }
+        @media (max-width: 480px) { h1 { font-size: 1.5rem; } }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(212, 175, 55, 0.1); padding: 15px; border-radius: 15px; text-align: center; }
+        .stat-label { font-size: 0.65rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; }
+        .stat-value { font-size: 1.6rem; font-weight: 900; color: #fff; }
+
+        .section-title { font-size: 0.75rem; color: #555; border-bottom: 1px solid #222; padding-bottom: 8px; margin-bottom: 15px; letter-spacing: 2px; text-transform: uppercase; }
+        .tournament-item { display: flex; justify-content: space-between; align-items: center; padding: 18px; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 15px; margin-bottom: 12px; background: rgba(255,255,255,0.02); transition: 0.3s; }
         
-        .tournament-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 15px; margin-bottom: 15px; background: rgba(255,255,255,0.03); }
-        .btn-delete { background: none; border: 1px solid #444; color: #666; padding: 10px 15px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; }
-        .btn-delete:hover { border-color: var(--danger) !important; color: var(--danger) !important; background: rgba(231, 76, 60, 0.1); }
+        button.primary { background: var(--btn-grad); color: #000; font-weight: 900; border: none; cursor: pointer; padding: 16px; border-radius: 12px; width: 100%; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
+        .btn-delete { background: none; border: 1px solid #333; color: #555; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
 
         .table-wrapper { width: 100%; overflow-x: auto; border-radius: 12px; background: rgba(0,0,0,0.4); border: 1px solid #333; margin-bottom: 25px; }
         table { width: 100%; border-collapse: collapse; }
-        th { background: rgba(212, 175, 55, 0.1); color: var(--gold); padding: 15px; font-size: 0.75rem; border-bottom: 1px solid #333; text-transform: uppercase; }
+        th { background: rgba(212, 175, 55, 0.1); color: var(--gold); padding: 15px; font-size: 0.7rem; border-bottom: 1px solid #333; text-transform: uppercase; }
         td { padding: 15px; border-bottom: 1px solid #1a1a1a; text-align: center; }
         .rank-cell.qualify { border-left: 4px solid var(--qualify-green); background: rgba(39, 174, 96, 0.1); font-weight: bold; }
 
@@ -45,27 +47,17 @@
         .day-content { display: none; padding: 10px; }
         .day-content.active { display: block; }
 
-        .header-actions { display: flex; align-items: center; gap: 15px; }
-        .lock-icon { cursor: pointer; font-size: 1.2rem; padding: 5px; }
-
-        .match-row { padding: 12px 5px; display: grid; grid-template-columns: 1fr 110px 1fr; align-items: center; border-bottom: 1px solid #222; gap: 5px; }
-        .match-row > div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .match-row, .final-match { padding: 12px 5px; display: grid; grid-template-columns: 1fr 110px 1fr; align-items: center; border-bottom: 1px solid #222; gap: 5px; }
+        .match-row > div:first-child, .final-match > div:first-child { text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .match-row > div:last-child, .final-match > div:last-child { text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
         .score-box { display: flex; justify-content: center; align-items: center; gap: 4px; width: 110px; margin: 0 auto; }
-        .score-box input { width: 42px; height: 38px; text-align: center; font-size: 1.1rem; font-weight: bold; color: var(--bright-gold); background: #000; border: 1px solid #444; border-radius: 8px; padding: 0; box-sizing: border-box; -moz-appearance: textfield; }
-        .score-box input::-webkit-outer-spin-button, .score-box input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .score-box input:disabled { opacity: 0.2; cursor: not-allowed; }
-
-        button.primary { background: var(--btn-grad); color: #000; font-weight: 900; border: none; cursor: pointer; padding: 15px; border-radius: 12px; width: 100%; margin-top: 10px; text-transform: uppercase; }
+        .score-box input { width: 42px; height: 38px; text-align: center; font-size: 1.1rem; font-weight: bold; color: var(--bright-gold); background: #000; border: 1px solid #444; border-radius: 8px; padding: 0; box-sizing: border-box; }
+        
+        .ko-round-title { color: var(--gold); text-align: center; margin: 30px 0 10px 0; text-transform: uppercase; font-size: 0.9rem; border-bottom: 1px solid #333; padding-bottom: 5px; }
         .view { display: none; } .view.active { display: block; }
         .back-btn { background: none; color: var(--gold); border: 1px solid var(--gold); padding: 8px 15px; cursor: pointer; border-radius: 8px; margin-bottom: 15px; }
-        .ko-round-title { color: var(--gold); text-align: center; margin: 30px 0 10px 0; text-transform: uppercase; font-size: 0.9rem; border-bottom: 1px solid #333; padding-bottom: 5px; }
         
-        .final-match { padding: 15px 5px; display: grid; grid-template-columns: 1fr 120px 1fr; align-items: center; gap: 5px; }
-        .final-match > div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .final-match > div:first-child { text-align: right; }
-        .final-match > div:last-child { text-align: left; }
-
         select, input[type="text"], textarea { width:100%; padding:12px; background:#111; color:white; border:1px solid #444; border-radius:8px; margin-bottom:15px; box-sizing:border-box; }
     </style>
 </head>
@@ -73,15 +65,28 @@
 <div class="container">
     <div id="view-dashboard" class="view active">
         <h1><span class="fc-gold">FLIGHTCLUB</span> <span class="mg-white">MANAGER</span></h1>
-        <button class="primary" onclick="showView('view-creator')">Neues Event erstellen</button>
-        <div id="tournament-list" style="margin-top: 30px;"></div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Events Gesamt</div>
+                <div id="stat-total-events" class="stat-value">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Status</div>
+                <div id="stat-active-status" class="stat-value" style="color: var(--qualify-green); font-size: 1rem;">READY</div>
+            </div>
+        </div>
+        <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.1); margin-bottom: 35px;">
+            <button class="primary" onclick="showView('view-creator')">+ NEUES EVENT STARTEN</button>
+        </div>
+        <div class="section-title">Vorherige Events</div>
+        <div id="tournament-list"></div>
     </div>
 
     <div id="view-creator" class="view">
         <button class="back-btn" onclick="showView('view-dashboard')">← ZURÜCK</button>
         <h2>🏆 <span>Event Setup</span></h2>
         <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; border: 1px solid #333;">
-            <input type="text" id="event-name" placeholder="Event Name">
+            <input type="text" id="event-name" placeholder="Name des Turniers">
             <select id="event-mode" onchange="toggleGroupOptions()">
                 <option value="league">Ligaphase (12 Spieltage + Finale)</option>
                 <option value="knockout">K.O. System</option>
@@ -93,15 +98,14 @@
                     <option value="2">Hin- und Rückrunde</option>
                 </select>
             </div>
-            <textarea id="event-players" placeholder="Spieler (Komma getrennt)"></textarea>
-            <button class="primary" onclick="generateEvent()">EVENT STARTEN</button>
+            <textarea id="event-players" placeholder="Spieler Namen (mit Komma getrennt)"></textarea>
+            <button class="primary" onclick="generateEvent()">TURNIER JETZT STARTEN</button>
         </div>
     </div>
 
     <div id="view-event" class="view">
         <button class="back-btn" onclick="showView('view-dashboard')">← DASHBOARD</button>
         <h1 id="active-event-title" style="text-align: center;"><span>EVENT</span></h1>
-        
         <div id="league-container">
             <div id="league-table-area"></div>
             <div id="schedule-content"></div>
@@ -113,7 +117,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, push, onValue, update, remove, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, push, onValue, update, remove, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAzR88gZehg9R4jZAVbb8xXtP9qXfXe-l4",
@@ -142,31 +146,28 @@
     };
 
     onValue(ref(db, 'all_events'), (snap) => {
-        const list = document.getElementById('tournament-list'); list.innerHTML = "";
-        const data = snap.val(); if(!data) return;
-        Object.keys(data).sort((a,b) => data[b].createdAt - data[a].createdAt).forEach(id => {
+        const list = document.getElementById('tournament-list'); 
+        const statTotal = document.getElementById('stat-total-events');
+        list.innerHTML = "";
+        const data = snap.val(); 
+        if(!data) {
+            statTotal.innerText = "0";
+            return;
+        }
+        const keys = Object.keys(data);
+        statTotal.innerText = keys.length;
+        keys.sort((a,b) => data[b].createdAt - data[a].createdAt).forEach(id => {
             const item = document.createElement('div'); item.className = 'tournament-item';
-            item.innerHTML = `<div onclick="openEvent('${id}')" style="cursor:pointer; flex:1;"><strong>${data[id].name}</strong><br><span style="font-size:0.7rem; color:var(--gold)">${data[id].mode.toUpperCase()}</span></div>
+            item.innerHTML = `<div onclick="openEvent('${id}')" style="cursor:pointer; flex:1;">
+                <div style="font-weight:bold; font-size:1rem; color:#fff;">${data[id].name}</div>
+                <div style="font-size:0.65rem; color:var(--gold); margin-top:4px;">${data[id].mode.toUpperCase()} • ${data[id].players.length} SPIELER</div>
+            </div>
             <button class="btn-delete" onclick="deleteEvent('${id}')">LÖSCHEN</button>`;
             list.appendChild(item);
         });
     });
 
     window.deleteEvent = (id) => { if(confirm("Event wirklich löschen?")) remove(ref(db, 'all_events/' + id)); };
-
-    function shuffleMatches(matches) {
-        if (matches.length <= 2) return matches;
-        let result = [];
-        let remaining = [...matches].sort(() => Math.random() - 0.5);
-        result.push(remaining.shift());
-        while (remaining.length > 0) {
-            let lastMatch = result[result.length - 1];
-            let nextIndex = remaining.findIndex(m => m.p1 !== lastMatch.p1 && m.p1 !== lastMatch.p2 && m.p2 !== lastMatch.p1 && m.p2 !== lastMatch.p2);
-            if (nextIndex === -1) nextIndex = 0;
-            result.push(remaining.splice(nextIndex, 1)[0]);
-        }
-        return result;
-    }
 
     window.generateEvent = () => {
         const name = document.getElementById('event-name').value;
@@ -180,37 +181,19 @@
             eventData.koRounds = createKOBracket(players);
             eventData.finals.unlocked = true;
         } else {
-            const hinPairs = [];
-            const rueckPairs = [];
-            const multiplier = (mode === 'groups') ? parseInt(document.getElementById('group-rounds').value) : 1;
-            
-            for(let i=0; i<players.length; i++) {
-                for(let j=i+1; j<players.length; j++) {
-                    hinPairs.push({p1:players[i], p2:players[j], s1:"", s2:""});
-                }
-            }
-            if(multiplier === 2) {
-                hinPairs.forEach(p => rueckPairs.push({p1:p.p2, p2:p.p1, s1:"", s2:""}));
-            }
+            const pairs = [];
+            for(let i=0; i<players.length; i++) for(let j=i+1; j<players.length; j++) pairs.push({p1:players[i], p2:players[j], s1:"", s2:""});
+            const multiplier = (mode === 'groups' && document.getElementById('group-rounds').value === "2") ? 2 : 1;
+            let finalPairs = [...pairs];
+            if(multiplier === 2) pairs.forEach(p => finalPairs.push({p1:p.p2, p2:p.p1, s1:"", s2:""}));
             
             const count = (mode === 'league') ? 12 : 1;
             eventData.days = [];
             for(let d=1; d<=count; d++) {
-                let balancedMatches = shuffleMatches([...hinPairs]);
-                if(rueckPairs.length > 0) {
-                    balancedMatches = balancedMatches.concat(shuffleMatches([...rueckPairs]));
-                }
-                eventData.days.push({ 
-                    round: (mode==='league'?'Spieltag '+d:'Gruppenphase'), 
-                    matches: JSON.parse(JSON.stringify(balancedMatches)), 
-                    locked: false 
-                });
+                eventData.days.push({ round: (mode==='league'?'Spieltag '+d:'Gruppenphase'), matches: JSON.parse(JSON.stringify(finalPairs.sort(() => Math.random() - 0.5))), locked: false });
             }
         }
-        push(ref(db, 'all_events'), eventData).then(() => {
-            showView('view-dashboard');
-            document.getElementById('group-options').style.display = 'none';
-        });
+        push(ref(db, 'all_events'), eventData).then(() => showView('view-dashboard'));
     };
 
     function createKOBracket(players) {
@@ -228,16 +211,6 @@
             rounds["Runde_" + rCount] = nextR;
             rCount++;
         }
-        firstRound.forEach((m, idx) => {
-            if(m.p2 === "FREILOS" || m.p1 === "FREILOS") {
-                const winner = m.p2 === "FREILOS" ? m.p1 : m.p2;
-                if(rounds["Runde_2"]) {
-                    const nextIdx = Math.floor(idx/2); const slot = (idx % 2 === 0) ? "p1" : "p2";
-                    rounds["Runde_2"][nextIdx][slot] = winner;
-                    if(m.p2 === "FREILOS") { m.s1 = "1"; m.s2 = "0"; } else { m.s1 = "0"; m.s2 = "1"; }
-                }
-            }
-        });
         return rounds;
     }
 
@@ -247,6 +220,7 @@
             const ev = snap.val(); if(!ev) return;
             document.getElementById('active-event-title').innerHTML = `<span>${ev.name}</span>`;
             document.querySelectorAll('.day-content.active').forEach(el => openDays.add(el.id));
+
             if(ev.mode === 'knockout') {
                 document.getElementById('league-container').style.display = 'none';
                 document.getElementById('ko-container').style.display = 'block';
@@ -256,6 +230,7 @@
                 document.getElementById('ko-container').style.display = 'none';
                 renderLeague(ev);
             }
+
             openDays.forEach(id => {
                 const el = document.getElementById(id);
                 if(el) {
@@ -275,10 +250,8 @@
                 const s1 = parseInt(m.s1), s2 = parseInt(m.s2);
                 if(!isNaN(s1) && !isNaN(s2)) {
                     let p1 = stats.find(s => s.name === m.p1), p2 = stats.find(s => s.name === m.p2);
-                    if(p1 && p2) {
-                        p1.sp++; p2.sp++; p1.diff += (s1-s2); p2.diff += (s2-s1);
-                        if(s1>s2) p1.pkt+=2; else if(s2>s1) p2.pkt+=2; else {p1.pkt++; p2.pkt++;}
-                    }
+                    p1.sp++; p2.sp++; p1.diff += (s1-s2); p2.diff += (s2-s1);
+                    if(s1>s2) p1.pkt+=2; else if(s2>s1) p2.pkt+=2; else {p1.pkt++; p2.pkt++;}
                 }
             });
         });
@@ -286,7 +259,7 @@
         document.getElementById('league-table-area').innerHTML = `<div class="table-wrapper"><table><thead><tr><th>#</th><th style="text-align:left">Spieler</th><th>SP.</th><th>+/-</th><th>PKT.</th></tr></thead><tbody>${stats.map((s,i) => `<tr><td class="rank-cell ${i<4?'qualify':''}">${i+1}</td><td style="text-align:left; font-weight:bold;">${s.name}</td><td>${s.sp}</td><td>${s.diff}</td><td><strong>${s.pkt}</strong></td></tr>`).join('')}</tbody></table></div>`;
         let h = "";
         ev.days.forEach((day, dIdx) => {
-            h += `<div class="day-section"><div class="day-header" onclick="toggleDay(${dIdx})"><strong>${day.round}</strong><div class="header-actions"><span id="arrow-${dIdx}">▼</span><span class="lock-icon" onclick="handleLock(event, ${dIdx}, ${day.locked})">${day.locked ? '🔒' : '🔓'}</span></div></div><div id="day-content-${dIdx}" class="day-content">${day.matches.map((m, mIdx) => `<div class="match-row"><div style="text-align:right;">${m.p1}</div><div class="score-box"><input type="number" value="${m.s1}" ${day.locked?'disabled':''} onchange="updateScore(${dIdx}, ${mIdx}, 's1', this.value)">:<input type="number" value="${m.s2}" ${day.locked?'disabled':''} onchange="updateScore(${dIdx}, ${mIdx}, 's2', this.value)"></div><div style="text-align:left;">${m.p2}</div></div>`).join('')}</div></div>`;
+            h += `<div class="day-section"><div class="day-header" onclick="toggleDay(${dIdx})"><strong>${day.round}</strong><div class="header-actions"><span id="arrow-${dIdx}">▼</span><span class="lock-icon" onclick="handleLock(event, ${dIdx}, ${day.locked})">${day.locked ? '🔒' : '🔓'}</span></div></div><div id="day-content-${dIdx}" class="day-content">${day.matches.map((m, mIdx) => `<div class="match-row"><div>${m.p1}</div><div class="score-box"><input type="number" value="${m.s1}" ${day.locked?'disabled':''} onchange="updateScore(${dIdx}, ${mIdx}, 's1', this.value)">:<input type="number" value="${m.s2}" ${day.locked?'disabled':''} onchange="updateScore(${dIdx}, ${mIdx}, 's2', this.value)"></div><div>${m.p2}</div></div>`).join('')}</div></div>`;
         });
         document.getElementById('schedule-content').innerHTML = h;
         if(!ev.finals || !ev.finals.unlocked) {
@@ -298,17 +271,13 @@
         }
     }
 
-    window.handleLock = (e, dIdx, isLocked) => {
-        e.stopPropagation();
-        if(!isLocked) update(ref(db, `all_events/${currentId}/days/${dIdx}`), { locked: true });
-        else if(prompt("PIN zum Entsperren:") === PW) update(ref(db, `all_events/${currentId}/days/${dIdx}`), { locked: false });
-    };
-
-    window.toggleDay = (idx) => {
+    window.handleLock = (e, dIdx, isLocked) => { e.stopPropagation(); if(!isLocked) update(ref(db, `all_events/${currentId}/days/${dIdx}`), { locked: true }); else if(prompt("PIN:") === PW) update(ref(db, `all_events/${currentId}/days/${dIdx}`), { locked: false }); };
+    
+    window.toggleDay = (idx) => { 
         const id = `day-content-${idx}`;
-        const content = document.getElementById(id);
-        const isActive = content.classList.toggle('active');
-        document.getElementById(`arrow-${idx}`).textContent = isActive ? '▲' : '▼';
+        const el = document.getElementById(id); 
+        const isActive = el.classList.toggle('active'); 
+        document.getElementById(`arrow-${idx}`).textContent = isActive ? '▲' : '▼'; 
         if(isActive) openDays.add(id); else openDays.delete(id);
     };
 
@@ -319,10 +288,44 @@
     };
 
     function renderFinalMatches(f) {
-        document.getElementById('final-area').innerHTML = `<div style="margin-top:40px; padding:25px; border:2px solid var(--gold); border-radius:20px; background:rgba(0,0,0,0.5);"><h2 style="text-align:center; color:var(--gold);">🏆 FINALTAG</h2><div class="ko-round-title">Halbfinale</div><div class="final-match"><div>${f.semi1.p1}</div><div class="score-box"><input type="number" value="${f.semi1.s1}" onchange="updateF('semi1','s1',this.value)">:<input type="number" value="${f.semi1.s2}" onchange="updateF('semi1','s2',this.value)"></div><div>${f.semi1.p2}</div></div><div class="final-match"><div>${f.semi2.p1}</div><div class="score-box"><input type="number" value="${f.semi2.s1}" onchange="updateF('semi2','s1',this.value)">:<input type="number" value="${f.semi2.s2}" onchange="updateF('semi2','s2',this.value)"></div><div>${f.semi2.p2}</div></div><div class="ko-round-title">FINALE</div><div class="final-match" style="background:rgba(212,175,55,0.1); padding:20px; border-radius:12px;"><div style="font-weight:bold;">${f.final.p1}</div><div class="score-box"><input type="number" value="${f.final.s1}" onchange="updateF('final','s1',this.value)">:<input type="number" value="${f.final.s2}" onchange="updateF('final','s2',this.value)"></div><div style="font-weight:bold;">${f.final.p2}</div></div><button style="margin-top:20px; color:var(--danger); background:none; border:none; cursor:pointer; width:100%; font-size:0.75rem;" onclick="resetFinals()">❌ FINALE ZURÜCKSETZEN</button></div>`;
+        document.getElementById('final-area').innerHTML = `
+        <div style="margin-top:40px; padding:25px; border:2px solid var(--gold); border-radius:20px; background:rgba(0,0,0,0.5);">
+            <h2 style="text-align:center; color:var(--gold);">🏆 FINALTAG</h2>
+            <div class="ko-round-title">Halbfinale</div>
+            <div class="final-match">
+                <div>${f.semi1.p1}</div>
+                <div class="score-box">
+                    <input type="number" value="${f.semi1.s1}" onchange="updateF('semi1','s1',this.value)">:
+                    <input type="number" value="${f.semi1.s2}" onchange="updateF('semi1','s2',this.value)">
+                </div>
+                <div>${f.semi1.p2}</div>
+            </div>
+            <div class="final-match">
+                <div>${f.semi2.p1}</div>
+                <div class="score-box">
+                    <input type="number" value="${f.semi2.s1}" onchange="updateF('semi2','s1',this.value)">:
+                    <input type="number" value="${f.semi2.s2}" onchange="updateF('semi2','s2',this.value)">
+                </div>
+                <div>${f.semi2.p2}</div>
+            </div>
+            <div class="ko-round-title">FINALE</div>
+            <div class="final-match" style="background:rgba(212,175,55,0.1); padding:20px; border-radius:12px;">
+                <div style="font-weight:bold;">${f.final.p1}</div>
+                <div class="score-box">
+                    <input type="number" value="${f.final.s1}" onchange="updateF('final','s1',this.value)">:
+                    <input type="number" value="${f.final.s2}" onchange="updateF('final','s2',this.value)">
+                </div>
+                <div style="font-weight:bold;">${f.final.p2}</div>
+            </div>
+            <button style="margin-top:20px; color:var(--danger); background:none; border:none; cursor:pointer; width:100%; font-size:0.75rem;" onclick="resetFinals()">❌ FINALTAG ABBRECHEN & ZURÜCK</button>
+        </div>`;
     }
 
-    window.resetFinals = () => { if(confirm("Finaltag wirklich zurücksetzen?")) update(ref(db, `all_events/${currentId}/finals`), { unlocked: false }); };
+    window.resetFinals = () => { 
+        if(confirm("Finaltag abbrechen und zur Tabelle zurückkehren? Alle Finalergebnisse werden gelöscht.")) {
+            update(ref(db, `all_events/${currentId}/finals`), { unlocked: false });
+        }
+    };
 
     window.updateF = (m, s, v) => {
         update(ref(db, `all_events/${currentId}/finals/${m}`), { [s]: v }).then(() => {
@@ -336,15 +339,14 @@
     };
 
     function renderKO(rounds) {
-        let h = `<h2 style="text-align:center; color:var(--gold);">🏆 K.O. TURNIER</h2>`;
+        let h = `<h2 style="text-align:center; color:var(--gold);">🏆 TURNIER-BAUM</h2>`;
         Object.keys(rounds).sort((a,b) => a.localeCompare(b, undefined, {numeric: true})).forEach(r => {
             h += `<div class="ko-round-title">${r.replace('_',' ')}</div>`;
             rounds[r].forEach((m, i) => {
-                const isFreilos = (m.p1 === "FREILOS" || m.p2 === "FREILOS");
-                h += `<div class="match-row" style="${isFreilos ? 'opacity:0.5' : ''}">
-                    <div style="text-align:right; font-weight:bold;">${m.p1}</div>
-                    <div class="score-box"><input type="number" value="${m.s1}" ${isFreilos?'disabled':''} onchange="updateKO('${r}', ${i}, 's1', this.value)">:<input type="number" value="${m.s2}" ${isFreilos?'disabled':''} onchange="updateKO('${r}', ${i}, 's2', this.value)"></div>
-                    <div style="text-align:left; font-weight:bold;">${m.p2}</div>
+                h += `<div class="match-row">
+                    <div>${m.p1}</div>
+                    <div class="score-box"><input type="number" value="${m.s1}" onchange="updateKO('${r}', ${i}, 's1', this.value)">:<input type="number" value="${m.s2}" onchange="updateKO('${r}', ${i}, 's2', this.value)"></div>
+                    <div>${m.p2}</div>
                 </div>`;
             });
         });
@@ -359,7 +361,7 @@
                     const nextR = "Runde_" + (parseInt(r.split('_')[1]) + 1);
                     const winner = parseInt(m.s1) > parseInt(m.s2) ? m.p1 : m.p2;
                     const nextIdx = Math.floor(i / 2); const slot = (i % 2 === 0) ? 'p1' : 'p2';
-                    update(ref(db, `all_events/${currentId}/koRounds/${nextR}/${nextIdx}`), { [slot]: winner });
+                    if(currentId) update(ref(db, `all_events/${currentId}/koRounds/${nextR}/${nextIdx}`), { [slot]: winner });
                 }
             }, {onlyOnce: true});
         });
