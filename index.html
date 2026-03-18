@@ -180,6 +180,8 @@
         if(mode === 'knockout') {
             eventData.koRounds = createKOBracket(players);
             eventData.finals.unlocked = true;
+            // Freilos-Check vor dem Hochladen
+            checkAllFreilosLocally(eventData.koRounds);
         } else {
             const pairs = [];
             for(let i=0; i<players.length; i++) for(let j=i+1; j<players.length; j++) pairs.push({p1:players[i], p2:players[j], s1:"", s2:""});
@@ -212,6 +214,27 @@
             rCount++;
         }
         return rounds;
+    }
+
+    // Hilfsfunktion für Freilose beim ersten Erstellen
+    function checkAllFreilosLocally(rounds) {
+        const roundKeys = Object.keys(rounds).sort((a,b) => a.localeCompare(b, undefined, {numeric: true}));
+        roundKeys.forEach((rKey) => {
+            rounds[rKey].forEach((m, i) => {
+                let winner = null;
+                if (m.p2 === "FREILOS" && m.p1 !== "?" && m.p1 !== "FREILOS") { m.s1 = "1"; m.s2 = "0"; winner = m.p1; }
+                else if (m.p1 === "FREILOS" && m.p2 !== "?" && m.p2 !== "FREILOS") { m.s1 = "0"; m.s2 = "1"; winner = m.p2; }
+                
+                if(winner) {
+                    const nextR = "Runde_" + (parseInt(rKey.split('_')[1]) + 1);
+                    if(rounds[nextR]) {
+                        const nextIdx = Math.floor(i / 2);
+                        const slot = (i % 2 === 0) ? 'p1' : 'p2';
+                        rounds[nextR][nextIdx][slot] = winner;
+                    }
+                }
+            });
+        });
     }
 
     window.openEvent = (id) => {
@@ -355,17 +378,48 @@
 
     window.updateKO = (r, i, s, v) => {
         update(ref(db, `all_events/${currentId}/koRounds/${r}/${i}`), { [s]: v }).then(() => {
-            onValue(ref(db, `all_events/${currentId}/koRounds/${r}/${i}`), (snap) => {
-                const m = snap.val();
-                if(m.s1 !== "" && m.s2 !== "") {
-                    const nextR = "Runde_" + (parseInt(r.split('_')[1]) + 1);
+            get(ref(db, `all_events/${currentId}/koRounds`)).then((snap) => {
+                const allRounds = snap.val();
+                const m = allRounds[r][i];
+                if(m.s1 !== "" && m.s2 !== "" && m.p1 !== "?" && m.p2 !== "?") {
                     const winner = parseInt(m.s1) > parseInt(m.s2) ? m.p1 : m.p2;
-                    const nextIdx = Math.floor(i / 2); const slot = (i % 2 === 0) ? 'p1' : 'p2';
-                    if(currentId) update(ref(db, `all_events/${currentId}/koRounds/${nextR}/${nextIdx}`), { [slot]: winner });
+                    const nextRKey = "Runde_" + (parseInt(r.split('_')[1]) + 1);
+                    const nextIdx = Math.floor(i / 2);
+                    const slot = (i % 2 === 0) ? 'p1' : 'p2';
+                    
+                    if(allRounds[nextRKey]) {
+                        update(ref(db, `all_events/${currentId}/koRounds/${nextRKey}/${nextIdx}`), { [slot]: winner }).then(() => {
+                            // Kettenreaktion: Prüfen ob der Gewinner nun gegen ein Freilos steht
+                            setTimeout(() => triggerFreilosCheck(nextRKey, nextIdx), 300);
+                        });
+                    }
                 }
-            }, {onlyOnce: true});
+            });
         });
     };
+
+    function triggerFreilosCheck(rKey, i) {
+        get(ref(db, `all_events/${currentId}/koRounds/${rKey}/${i}`)).then(snap => {
+            const m = snap.val();
+            if(!m) return;
+            let winner = null;
+            if(m.p2 === "FREILOS" && m.p1 !== "?" && m.p1 !== "FREILOS") { winner = m.p1; update(ref(db, `all_events/${currentId}/koRounds/${rKey}/${i}`), {s1: "1", s2: "0"}); }
+            else if(m.p1 === "FREILOS" && m.p2 !== "?" && m.p2 !== "FREILOS") { winner = m.p2; update(ref(db, `all_events/${currentId}/koRounds/${rKey}/${i}`), {s1: "0", s2: "1"}); }
+            
+            if(winner) {
+                const nextRKey = "Runde_" + (parseInt(rKey.split('_')[1]) + 1);
+                const nextIdx = Math.floor(i / 2);
+                const slot = (i % 2 === 0) ? 'p1' : 'p2';
+                get(ref(db, `all_events/${currentId}/koRounds/${nextRKey}`)).then(nextSnap => {
+                    if(nextSnap.exists()) {
+                        update(ref(db, `all_events/${currentId}/koRounds/${nextRKey}/${nextIdx}`), { [slot]: winner }).then(() => {
+                            setTimeout(() => triggerFreilosCheck(nextRKey, nextIdx), 300);
+                        });
+                    }
+                });
+            }
+        });
+    }
 </script>
 </body>
 </html>
