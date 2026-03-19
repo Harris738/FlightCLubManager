@@ -42,6 +42,10 @@
         td { padding: 15px; border-bottom: 1px solid #1a1a1a; text-align: center; }
         .rank-cell.qualify { border-left: 4px solid var(--qualify-green); background: rgba(39, 174, 96, 0.1); font-weight: bold; }
 
+        /* NEUE BESTLEISTUNGEN STYLES */
+        .rec-btn { background: var(--btn-grad); color: #000; border: none; border-radius: 4px; padding: 4px 8px; font-weight: bold; font-size: 0.7rem; cursor: pointer; margin-bottom: 4px; display: block; width: 100%; }
+        .rec-num { background: #000; color: var(--bright-gold); border-radius: 4px; padding: 2px 6px; font-size: 0.9rem; font-weight: 900; cursor: pointer; border: 1px solid #333; }
+
         .day-section { background: rgba(255,255,255,0.03); border: 1px solid #333; border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
         .day-header { padding: 15px; background: rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .day-content { display: none; padding: 10px; }
@@ -108,6 +112,24 @@
         <h1 id="active-event-title" style="text-align: center;"><span>EVENT</span></h1>
         <div id="league-container">
             <div id="league-table-area"></div>
+            
+            <div id="records-area" style="display:none;">
+                <div class="section-title">⭐ Bestleistungen (Tippen: +1 | Zahl: -1)</div>
+                <div class="table-wrapper">
+                    <table id="records-table">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left">Spieler</th>
+                                <th>180er</th>
+                                <th>HF</th>
+                                <th>SL</th>
+                            </tr>
+                        </thead>
+                        <tbody id="records-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
             <div id="schedule-content"></div>
             <div id="final-area"></div>
         </div>
@@ -180,7 +202,6 @@
         if(mode === 'knockout') {
             eventData.koRounds = createKOBracket(players);
             eventData.finals.unlocked = true;
-            // Freilos-Check vor dem Hochladen
             checkAllFreilosLocally(eventData.koRounds);
         } else {
             const pairs = [];
@@ -216,7 +237,6 @@
         return rounds;
     }
 
-    // Hilfsfunktion für Freilose beim ersten Erstellen
     function checkAllFreilosLocally(rounds) {
         const roundKeys = Object.keys(rounds).sort((a,b) => a.localeCompare(b, undefined, {numeric: true}));
         roundKeys.forEach((rKey) => {
@@ -280,6 +300,26 @@
         });
         stats.sort((a,b) => b.pkt - a.pkt || b.diff - a.diff);
         document.getElementById('league-table-area').innerHTML = `<div class="table-wrapper"><table><thead><tr><th>#</th><th style="text-align:left">Spieler</th><th>SP.</th><th>+/-</th><th>PKT.</th></tr></thead><tbody>${stats.map((s,i) => `<tr><td class="rank-cell ${i<4?'qualify':''}">${i+1}</td><td style="text-align:left; font-weight:bold;">${s.name}</td><td>${s.sp}</td><td>${s.diff}</td><td><strong>${s.pkt}</strong></td></tr>`).join('')}</tbody></table></div>`;
+        
+        // BESTLEISTUNGEN TABELLE RENDERN
+        if(ev.mode === 'league') {
+            document.getElementById('records-area').style.display = 'block';
+            let recHTML = "";
+            const currentRecs = ev.playerRecords || {};
+            ev.players.forEach(p => {
+                const r = currentRecs[p] || { m180: 0, hf: 0, sl: 0 };
+                recHTML += `<tr>
+                    <td style="text-align:left; font-weight:bold; font-size:0.8rem;">${p}</td>
+                    <td><button class="rec-btn" onclick="modRec('${p}','m180',1)">180er</button><span class="rec-num" onclick="modRec('${p}','m180',-1)">${r.m180}</span></td>
+                    <td><button class="rec-btn" onclick="modRec('${p}','hf',1)">HF</button><span class="rec-num" onclick="modRec('${p}','hf',-1)">${r.hf}</span></td>
+                    <td><button class="rec-btn" onclick="modRec('${p}','sl',1)">SL</button><span class="rec-num" onclick="modRec('${p}','sl',-1)">${r.sl}</span></td>
+                </tr>`;
+            });
+            document.getElementById('records-body').innerHTML = recHTML;
+        } else {
+            document.getElementById('records-area').style.display = 'none';
+        }
+
         let h = "";
         ev.days.forEach((day, dIdx) => {
             h += `<div class="day-section"><div class="day-header" onclick="toggleDay(${dIdx})"><strong>${day.round}</strong><div class="header-actions"><span id="arrow-${dIdx}">▼</span><span class="lock-icon" onclick="handleLock(event, ${dIdx}, ${day.locked})">${day.locked ? '🔒' : '🔓'}</span></div></div><div id="day-content-${dIdx}" class="day-content">${day.matches.map((m, mIdx) => `<div class="match-row"><div>${m.p1}</div><div class="score-box"><input type="number" value="${m.s1}" ${day.locked?'disabled':''} onchange="updateScore(${dIdx}, ${mIdx}, 's1', this.value)">:<input type="number" value="${m.s2}" ${day.locked?'disabled':''} onchange="updateScore(${dIdx}, ${mIdx}, 's2', this.value)"></div><div>${m.p2}</div></div>`).join('')}</div></div>`;
@@ -293,6 +333,16 @@
             renderFinalMatches(ev.finals);
         }
     }
+
+    // FUNKTION ZUM ERHÖHEN/VERRINGERN DER REKORDE
+    window.modRec = (player, type, val) => {
+        get(ref(db, `all_events/${currentId}/playerRecords/${player}/${type}`)).then(snap => {
+            let current = snap.val() || 0;
+            let newVal = current + val;
+            if(newVal < 0) newVal = 0; // Keine negativen Werte
+            update(ref(db, `all_events/${currentId}/playerRecords/${player}`), { [type]: newVal });
+        });
+    };
 
     window.handleLock = (e, dIdx, isLocked) => { e.stopPropagation(); if(!isLocked) update(ref(db, `all_events/${currentId}/days/${dIdx}`), { locked: true }); else if(prompt("PIN:") === PW) update(ref(db, `all_events/${currentId}/days/${dIdx}`), { locked: false }); };
     
@@ -389,7 +439,6 @@
                     
                     if(allRounds[nextRKey]) {
                         update(ref(db, `all_events/${currentId}/koRounds/${nextRKey}/${nextIdx}`), { [slot]: winner }).then(() => {
-                            // Kettenreaktion: Prüfen ob der Gewinner nun gegen ein Freilos steht
                             setTimeout(() => triggerFreilosCheck(nextRKey, nextIdx), 300);
                         });
                     }
