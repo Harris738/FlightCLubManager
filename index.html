@@ -269,7 +269,7 @@
             signInWithEmailAndPassword(auth, email, pass).catch(e => errEl.innerText = "Login fehlgeschlagen.");
         }
     };
-
+auth.config.authDomain = "flightclub-pro-db.firebaseapp.com";
 window.loginWithGoogle = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
