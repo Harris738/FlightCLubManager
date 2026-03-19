@@ -271,17 +271,29 @@
     };
 
     // GOOGLE LOGIN FUNKTION HINZUGEFÜGT
-    window.loginWithGoogle = () => {
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                console.log("Google Login erfolgreich");
-            })
-            .catch((error) => {
-                document.getElementById('auth-error').innerText = "Google Login fehlgeschlagen oder abgebrochen.";
-                console.error(error);
-            });
-    };
+window.loginWithGoogle = () => {
+    const provider = new GoogleAuthProvider();
+    
+    // Das hier hilft, wenn der Handler die Anfrage blockiert:
+    provider.setCustomParameters({
+        prompt: 'select_account'
+    });
+
+    // Wir nutzen signInWithPopup, aber fügen einen Catch für die Konfiguration hinzu
+    signInWithPopup(auth, provider)
+        .then((result) => {
+            console.log("Erfolg");
+        })
+        .catch((error) => {
+            console.error("Fehler-Code:", error.code);
+            // Falls Popup immer noch blockt, versuche es als Ausweichlösung mit Redirect:
+            if (error.code === 'auth/internal-error' || error.code === 'auth/invalid-auth-handler') {
+                import { signInWithRedirect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+                signInWithRedirect(auth, provider);
+            }
+            document.getElementById('auth-error').innerText = "Fehler: " + error.code;
+        });
+};
 
     window.forgotPassword = () => {
         const email = document.getElementById('auth-email').value;
