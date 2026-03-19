@@ -23,7 +23,26 @@
         h1 .mg-white { color: #ffffff; }
         h2 span { background: linear-gradient(to bottom, #fff, var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        @media (max-width: 480px) { h1 { font-size: 1.5rem; } }
+        /* Optimierter Header Bereich */
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 10px;
+        }
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @media (max-width: 480px) { 
+            h1 { font-size: 1.2rem; } 
+            .container { padding: 15px; }
+            .btn-profile, .btn-delete { padding: 6px 8px; font-size: 0.65rem; }
+            .dash-profile-img { width: 28px; height: 28px; }
+        }
 
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .stat-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(212, 175, 55, 0.1); padding: 15px; border-radius: 15px; text-align: center; }
@@ -34,8 +53,8 @@
         .tournament-item { display: flex; justify-content: space-between; align-items: center; padding: 18px; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 15px; margin-bottom: 12px; background: rgba(255,255,255,0.02); transition: 0.3s; }
         
         button.primary { background: var(--btn-grad); color: #000; font-weight: 900; border: none; cursor: pointer; padding: 16px; border-radius: 12px; width: 100%; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
-        .btn-delete { background: none; border: 1px solid #333; color: #555; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
-        .btn-profile { background: rgba(255,255,255,0.1); border: 1px solid var(--gold); color: var(--gold); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.7rem; font-weight: bold; margin-right: 5px; }
+        .btn-delete { background: none; border: 1px solid #333; color: #555; border-radius: 8px; cursor: pointer; font-weight: bold; white-space: nowrap; }
+        .btn-profile { background: rgba(255,255,255,0.1); border: 1px solid var(--gold); color: var(--gold); border-radius: 8px; cursor: pointer; font-weight: bold; white-space: nowrap; }
 
         .table-wrapper { width: 100%; overflow-x: auto; border-radius: 12px; background: rgba(0,0,0,0.4); border: 1px solid #333; margin-bottom: 25px; }
         table { width: 100%; border-collapse: collapse; }
@@ -70,7 +89,7 @@
         .profile-pic-container { position: relative; display: inline-block; margin-bottom: 20px; }
         .profile-pic { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; background: #222; display: block; }
         .profile-upload-label { position: absolute; bottom: 0; right: 0; background: var(--gold); color: #000; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; border: 2px solid #000; }
-        .dash-profile-img { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--gold); object-fit: cover; margin-right: 10px; vertical-align: middle; }
+        .dash-profile-img { width: 35px; height: 35px; border-radius: 50%; border: 1.5px solid var(--gold); object-fit: cover; background: #222; }
     </style>
 </head>
 <body>
@@ -108,14 +127,15 @@
     </div>
 
     <div id="view-dashboard" class="view">
-        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h1 style="margin:0; font-size: 1.2rem;"><span class="fc-gold">FLIGHTCLUB</span> <span class="mg-white">MANAGER</span></h1>
-            <div style="display: flex; align-items: center;">
+        <div class="header-nav">
+            <h1 style="margin:0; font-size: 1rem; text-align: left;"><span class="fc-gold">FC</span> <span class="mg-white">PRO</span></h1>
+            <div class="header-controls">
                 <img id="dash-img" class="dash-profile-img" src="https://via.placeholder.com/50" onclick="showView('view-profile')" style="cursor: pointer;">
                 <button class="btn-profile" onclick="showView('view-profile')">PROFIL</button>
                 <button class="btn-delete" onclick="handleLogout()">LOGOUT</button>
             </div>
         </div>
+        
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Events Gesamt</div>
@@ -266,7 +286,6 @@
             document.getElementById('stat-active-user').innerText = user.displayName || "User";
             document.getElementById('profile-email').value = user.email;
             
-            // Lade Profilbild aus der Realtime Database
             get(ref(db, `users/${user.uid}/photo`)).then(snap => {
                 const photoData = snap.val();
                 const displayImg = photoData ? photoData : "https://via.placeholder.com/100";
@@ -282,7 +301,6 @@
         }
     });
 
-    // --- PROFIL FUNKTIONEN (DATABASE SPEICHERUNG) ---
     window.handleImageUpload = (input) => {
         const file = input.files[0];
         if (!file) return;
@@ -307,7 +325,6 @@
 
                 const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
 
-                // Speicherung in Database statt Auth Profile
                 set(ref(db, `users/${auth.currentUser.uid}/photo`), compressedBase64)
                 .then(() => {
                     document.getElementById('profile-img-preview').src = compressedBase64;
@@ -342,7 +359,6 @@
             .catch(e => { msg.innerText = "Fehler: Erfordert evtl. neuen Login."; msg.style.color = "var(--danger)"; });
     };
 
-    // --- DASHBOARD & LISTE ---
     function initDashboard() {
         onValue(ref(db, 'all_events'), (snap) => {
             const list = document.getElementById('tournament-list'); 
@@ -364,7 +380,6 @@
         });
     }
 
-    // --- EVENT LOGIK ---
     window.generateEvent = () => {
         const name = document.getElementById('event-name').value;
         const mode = document.getElementById('event-mode').value;
