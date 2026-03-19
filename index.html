@@ -241,6 +241,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const auth = getAuth(app);
+    auth.config.authDomain = "flightclub-pro-db.firebaseapp.com";
     let currentId = null;
     let currentUser = null;
     const PW = "5869";
