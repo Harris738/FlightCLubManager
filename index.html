@@ -271,17 +271,29 @@
     };
 
     // GOOGLE LOGIN FUNKTION HINZUGEFÜGT
-    window.loginWithGoogle = () => {
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                console.log("Google Login erfolgreich");
-            })
-            .catch((error) => {
-                document.getElementById('auth-error').innerText = "Google Login fehlgeschlagen oder abgebrochen.";
-                console.error(error);
-            });
-    };
+ window.loginWithGoogle = () => {
+    const provider = new GoogleAuthProvider();
+    
+    // Erzwingt die Kontoauswahl
+    provider.setCustomParameters({ prompt: 'select_account' });
+
+    signInWithPopup(auth, provider)
+        .then((result) => {
+            console.log("Login erfolgreich!");
+        })
+        .catch((error) => {
+            // Das hilft uns jetzt extrem weiter:
+            console.error("Vollständiger Fehler:", error);
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            
+            // Anzeige für dich auf der Seite
+            document.getElementById('auth-error').innerText = `Fehler: ${errorCode}`;
+            
+            // Falls 'auth/operation-not-allowed' kommt, ist der Provider in Firebase 
+            // trotz allem nicht korrekt gespeichert worden.
+        });
+};
 
     window.forgotPassword = () => {
         const email = document.getElementById('auth-email').value;
