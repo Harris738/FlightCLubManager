@@ -275,8 +275,10 @@
                 });
             })
             .catch((error) => {
-                document.getElementById('auth-error').innerText = "Google Login abgebrochen.";
-            });
+    console.error("Google Error:", error.code, error.message); // Hilft dir beim Fehlersuchen
+    document.getElementById('auth-error').innerText = "Login fehlgeschlagen oder abgebrochen.";
+});
+
     };
 
     window.forgotPassword = () => {
