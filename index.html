@@ -50,7 +50,6 @@
         .day-content { display: none; padding: 10px; }
         .day-content.active { display: block; }
 
-        /* OPTIMIERTE NAMENSANZEIGE */
         .match-row, .final-match { 
             padding: 12px 5px; 
             display: grid; 
@@ -230,7 +229,18 @@
         }
     };
 
-    window.handleLogout = () => signOut(auth);
+    // --- GEÄNDERTE LOGOUT LOGIK ---
+    window.handleLogout = () => {
+        signOut(auth).then(() => {
+            // Alle Eingabefelder im Login-Fenster leeren
+            document.getElementById('auth-email').value = "";
+            document.getElementById('auth-pass').value = "";
+            document.getElementById('auth-username').value = "";
+            document.getElementById('auth-error').innerText = "";
+        }).catch(error => {
+            console.error("Logout Fehler:", error);
+        });
+    };
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
