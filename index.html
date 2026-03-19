@@ -270,27 +270,17 @@
         }
     };
 
-// Google Login Funktion (Global verfügbar machen)
 window.loginWithGoogle = () => {
     const provider = new GoogleAuthProvider();
-    // Nutze Redirect für bessere Kompatibilität auf GitHub Pages
-    signInWithPopup(auth, provider);
-};
-
-// Das Ergebnis des Redirects beim Laden der Seite abfangen
-getRedirectResult(auth)
-    .then((result) => {
-        if (result) {
+    signInWithPopup(auth, provider)
+        .then((result) => {
             console.log("Google Login erfolgreich:", result.user.displayName);
-            // onAuthStateChanged kümmert sich um den Rest
-        }
-    })
-    .catch((error) => {
-        console.error("Fehler beim Google Redirect:", error);
-        if (error.code !== 'auth/redirect-cancelled-by-user') {
-            document.getElementById('auth-error').innerText = "Google Login Fehler: " + error.message;
-        }
-    });
+        })
+        .catch((error) => {
+            console.error("Google Login Fehler:", error.code);
+            document.getElementById('auth-error').innerText = "Fehler: " + error.message;
+        });
+};
 
     window.forgotPassword = () => {
         const email = document.getElementById('auth-email').value;
