@@ -274,7 +274,7 @@
 window.loginWithGoogle = () => {
     const provider = new GoogleAuthProvider();
     // Nutze Redirect für bessere Kompatibilität auf GitHub Pages
-    signInWithRedirect(auth, provider);
+    signInWithPopup(auth, provider);
 };
 
 // Das Ergebnis des Redirects beim Laden der Seite abfangen
