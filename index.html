@@ -23,123 +23,135 @@
         h1 .mg-white { color: #ffffff; }
         h2 span { background: linear-gradient(to bottom, #fff, var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        @media (max-width: 480px) { h1 { font-size: 1.5rem; } }
-
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .stat-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(212, 175, 55, 0.1); padding: 15px; border-radius: 15px; text-align: center; }
         .stat-label { font-size: 0.65rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; }
         .stat-value { font-size: 1.6rem; font-weight: 900; color: #fff; }
 
-        .section-title { font-size: 0.75rem; color: #555; border-bottom: 1px solid #222; padding-bottom: 8px; margin-bottom: 15px; letter-spacing: 2px; text-transform: uppercase; }
-        .tournament-item { display: flex; justify-content: space-between; align-items: center; padding: 18px; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 15px; margin-bottom: 12px; background: rgba(255,255,255,0.02); transition: 0.3s; }
+        .tournament-item { display: flex; justify-content: space-between; align-items: center; padding: 18px; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 15px; margin-bottom: 12px; background: rgba(255,255,255,0.02); }
         
-        button.primary { background: var(--btn-grad); color: #000; font-weight: 900; border: none; cursor: pointer; padding: 16px; border-radius: 12px; width: 100%; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
+        button.primary { background: var(--btn-grad); color: #000; font-weight: 900; border: none; cursor: pointer; padding: 16px; border-radius: 12px; width: 100%; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
         .btn-delete { background: none; border: 1px solid #333; color: #555; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
 
         .table-wrapper { width: 100%; overflow-x: auto; border-radius: 12px; background: rgba(0,0,0,0.4); border: 1px solid #333; margin-bottom: 25px; }
         table { width: 100%; border-collapse: collapse; }
-        th { background: rgba(212, 175, 55, 0.1); color: var(--gold); padding: 15px; font-size: 0.7rem; border-bottom: 1px solid #333; text-transform: uppercase; }
+        th { background: rgba(212, 175, 55, 0.1); color: var(--gold); padding: 15px; font-size: 0.7rem; border-bottom: 1px solid #333; }
         td { padding: 15px; border-bottom: 1px solid #1a1a1a; text-align: center; }
-        .rank-cell.qualify { border-left: 4px solid var(--qualify-green); background: rgba(39, 174, 96, 0.1); font-weight: bold; }
-
-        /* NEUE BESTLEISTUNGEN STYLES */
-        .rec-btn { background: var(--btn-grad); color: #000; border: none; border-radius: 4px; padding: 4px 8px; font-weight: bold; font-size: 0.7rem; cursor: pointer; margin-bottom: 4px; display: block; width: 100%; }
-        .rec-num { background: #000; color: var(--bright-gold); border-radius: 4px; padding: 2px 6px; font-size: 0.9rem; font-weight: 900; cursor: pointer; border: 1px solid #333; }
 
         .day-section { background: rgba(255,255,255,0.03); border: 1px solid #333; border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
         .day-header { padding: 15px; background: rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .day-content { display: none; padding: 10px; }
         .day-content.active { display: block; }
 
-        .match-row, .final-match { padding: 12px 5px; display: grid; grid-template-columns: 1fr 110px 1fr; align-items: center; border-bottom: 1px solid #222; gap: 5px; }
-        .match-row > div:first-child, .final-match > div:first-child { text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .match-row > div:last-child, .final-match > div:last-child { text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-        .score-box { display: flex; justify-content: center; align-items: center; gap: 4px; width: 110px; margin: 0 auto; }
-        .score-box input { width: 42px; height: 38px; text-align: center; font-size: 1.1rem; font-weight: bold; color: var(--bright-gold); background: #000; border: 1px solid #444; border-radius: 8px; padding: 0; box-sizing: border-box; }
+        .match-row { padding: 12px 5px; display: grid; grid-template-columns: 1fr 110px 1fr; align-items: center; border-bottom: 1px solid #222; gap: 5px; }
+        .score-box { display: flex; justify-content: center; align-items: center; gap: 4px; }
+        .score-box input { width: 42px; height: 38px; text-align: center; font-size: 1.1rem; color: var(--bright-gold); background: #000; border: 1px solid #444; border-radius: 8px; }
         
-        .ko-round-title { color: var(--gold); text-align: center; margin: 30px 0 10px 0; text-transform: uppercase; font-size: 0.9rem; border-bottom: 1px solid #333; padding-bottom: 5px; }
         .view { display: none; } .view.active { display: block; }
         .back-btn { background: none; color: var(--gold); border: 1px solid var(--gold); padding: 8px 15px; cursor: pointer; border-radius: 8px; margin-bottom: 15px; }
         
-        select, input[type="text"], textarea { width:100%; padding:12px; background:#111; color:white; border:1px solid #444; border-radius:8px; margin-bottom:15px; box-sizing:border-box; }
+        select, input[type="text"], input[type="password"], textarea { width:100%; padding:12px; background:#111; color:white; border:1px solid #444; border-radius:8px; margin-bottom:15px; box-sizing:border-box; }
+        
+        /* Spezifisch für das Login */
+        .auth-container { max-width: 400px; margin: 50px auto; background: rgba(255,255,255,0.05); padding: 25px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.2); text-align: center; }
+        .auth-toggle-link { color: var(--gold); text-decoration: none; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 <div class="container">
-    <div id="view-dashboard" class="view active">
-        <h1><span class="fc-gold">FLIGHTCLUB</span> <span class="mg-white">MANAGER</span></h1>
-        <div class="stats-grid">
+    
+    <div id="view-login" class="view active">
+        <h1><span class="fc-gold">FLIGHTCLUB</span> <span class="mg-white">PRO</span></h1>
+        <div class="auth-container">
+            <h2 id="auth-title" style="font-size: 1.2rem; margin-bottom: 20px;">Anmelden</h2>
+
+            <div id="username-wrapper" style="display: none;">
+                <input type="text" id="auth-username" placeholder="Dein Benutzername">
+            </div>
+
+            <input type="text" id="auth-email" placeholder="E-Mail">
+            <input type="password" id="auth-pass" placeholder="Passwort">
+            
+            <div id="login-actions">
+                <button class="primary" onclick="handleAuth('login')">LOGIN</button>
+                <p style="font-size: 0.8rem; margin-top: 15px; color: #888;">
+                    Noch kein Konto? <span class="auth-toggle-link" onclick="toggleAuthMode(true)">Hier registrieren</span>
+                </p>
+            </div>
+
+            <div id="register-actions" style="display: none;">
+                <button class="primary" onclick="handleAuth('register')">JETZT REGISTRIEREN</button>
+                <p style="font-size: 0.8rem; margin-top: 15px; color: #888;">
+                    Bereits registriert? <span class="auth-toggle-link" onclick="toggleAuthMode(false)">Zum Login</span>
+                </p>
+            </div>
+
+            <p id="auth-error" style="color:var(--danger); font-size:0.8rem; margin-top:15px; min-height:1em;"></p>
+        </div>
+    </div>
+
+    <div id="view-dashboard" class="view">
+        <div style="display:flex; justify-content: space-between; align-items: center;">
+            <h1 style="margin:0;"><span class="fc-gold">FLIGHTCLUB</span></h1>
+            <button class="btn-delete" onclick="handleLogout()">LOGOUT</button>
+        </div>
+        <div class="stats-grid" style="margin-top:20px;">
             <div class="stat-card">
                 <div class="stat-label">Events Gesamt</div>
                 <div id="stat-total-events" class="stat-value">0</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Status</div>
-                <div id="stat-active-status" class="stat-value" style="color: var(--qualify-green); font-size: 1rem;">READY</div>
+                <div class="stat-label">User</div>
+                <div id="stat-active-user" class="stat-value" style="color: var(--qualify-green); font-size: 1rem;">-</div>
             </div>
         </div>
-        <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.1); margin-bottom: 35px;">
-            <button class="primary" onclick="showView('view-creator')">+ NEUES EVENT STARTEN</button>
-        </div>
-        <div class="section-title">Vorherige Events</div>
-        <div id="tournament-list"></div>
+        <button class="primary" onclick="showView('view-creator')">+ NEUES EVENT STARTEN</button>
+        <div id="tournament-list" style="margin-top:25px;"></div>
     </div>
 
     <div id="view-creator" class="view">
         <button class="back-btn" onclick="showView('view-dashboard')">← ZURÜCK</button>
         <h2>🏆 <span>Event Setup</span></h2>
-        <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; border: 1px solid #333;">
-            <input type="text" id="event-name" placeholder="Name des Turniers">
-            <select id="event-mode" onchange="toggleGroupOptions()">
-                <option value="league">Ligaphase (12 Spieltage + Finale)</option>
-                <option value="knockout">K.O. System</option>
-                <option value="groups">Gruppe + K.O</option>
+        <input type="text" id="event-name" placeholder="Name des Turniers">
+        <select id="event-mode" onchange="toggleGroupOptions()">
+            <option value="league">Ligaphase (12 Spieltage + Finale)</option>
+            <option value="knockout">K.O. System</option>
+            <option value="groups">Gruppe + K.O</option>
+        </select>
+        <div id="group-options" style="display:none;">
+            <select id="group-rounds">
+                <option value="1">Hinrunde</option>
+                <option value="2">Hin- und Rückrunde</option>
             </select>
-            <div id="group-options" style="display:none;">
-                <select id="group-rounds">
-                    <option value="1">Hinrunde</option>
-                    <option value="2">Hin- und Rückrunde</option>
-                </select>
-            </div>
-            <textarea id="event-players" placeholder="Spieler Namen (mit Komma getrennt)"></textarea>
-            <button class="primary" onclick="generateEvent()">TURNIER JETZT STARTEN</button>
         </div>
+        <textarea id="event-players" placeholder="Spieler Namen (mit Komma getrennt)"></textarea>
+        <button class="primary" onclick="generateEvent()">TURNIER JETZT STARTEN</button>
     </div>
 
     <div id="view-event" class="view">
         <button class="back-btn" onclick="showView('view-dashboard')">← DASHBOARD</button>
-        <h1 id="active-event-title" style="text-align: center;"><span>EVENT</span></h1>
+        <h1 id="active-event-title"><span>EVENT</span></h1>
         <div id="league-container">
             <div id="league-table-area"></div>
-            
             <div id="records-area" style="display:none;">
-                <div class="section-title">⭐ Bestleistungen (Tippen: +1 | Zahl: -1)</div>
-                <div class="table-wrapper">
-                    <table id="records-table">
-                        <thead>
-                            <tr>
-                                <th style="text-align:left">Spieler</th>
-                                <th>180er</th>
-                                <th>HF</th>
-                                <th>SL</th>
-                            </tr>
-                        </thead>
+                <div id="records-body-container">
+                    <table class="table-wrapper">
+                        <thead><tr><th>Spieler</th><th>180er</th><th>HF</th><th>SL</th></tr></thead>
                         <tbody id="records-body"></tbody>
                     </table>
                 </div>
             </div>
-
             <div id="schedule-content"></div>
             <div id="final-area"></div>
         </div>
-        <div id="ko-container" style="display:none; margin-top:20px;"></div>
+        <div id="ko-container" style="display:none;"></div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, push, onValue, update, remove, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAzR88gZehg9R4jZAVbb8xXtP9qXfXe-l4",
@@ -153,41 +165,101 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const auth = getAuth(app);
     let currentId = null;
-    const PW = "5869";
+    let currentUser = null;
     let openDays = new Set(); 
+    const PW = "5869";
 
-    window.toggleGroupOptions = () => {
-        const mode = document.getElementById('event-mode').value;
-        document.getElementById('group-options').style.display = (mode === 'groups') ? 'block' : 'none';
+    // --- NEU: LOGIN UI LOGIK ---
+    window.toggleAuthMode = (isRegistering) => {
+        const userWrapper = document.getElementById('username-wrapper');
+        const loginActions = document.getElementById('login-actions');
+        const registerActions = document.getElementById('register-actions');
+        const title = document.getElementById('auth-title');
+        const errorEl = document.getElementById('auth-error');
+
+        errorEl.innerText = "";
+
+        if (isRegistering) {
+            userWrapper.style.display = 'block';
+            loginActions.style.display = 'none';
+            registerActions.style.display = 'block';
+            title.innerText = "Neuen Account erstellen";
+        } else {
+            userWrapper.style.display = 'none';
+            loginActions.style.display = 'block';
+            registerActions.style.display = 'none';
+            title.innerText = "Anmelden";
+        }
     };
 
+    window.handleAuth = (mode) => {
+        const email = document.getElementById('auth-email').value;
+        const pass = document.getElementById('auth-pass').value;
+        const username = document.getElementById('auth-username').value;
+        const errEl = document.getElementById('auth-error');
+
+        if(mode === 'register') {
+            if(!username) return alert("Benutzername erforderlich!");
+            createUserWithEmailAndPassword(auth, email, pass)
+                .then((cred) => {
+                    updateProfile(cred.user, { displayName: username }).then(() => location.reload());
+                })
+                .catch(e => errEl.innerText = e.message);
+        } else {
+            signInWithEmailAndPassword(auth, email, pass).catch(e => errEl.innerText = e.message);
+        }
+    };
+
+    window.handleLogout = () => signOut(auth);
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUser = user;
+            document.getElementById('stat-active-user').innerText = user.displayName || "User";
+            showView('view-dashboard');
+            initDashboardListener();
+        } else {
+            currentUser = null;
+            showView('view-login');
+        }
+    });
+
+    // --- DASHBOARD ---
+    function initDashboardListener() {
+        onValue(ref(db, 'all_events'), (snap) => {
+            const list = document.getElementById('tournament-list'); 
+            const statTotal = document.getElementById('stat-total-events');
+            list.innerHTML = "";
+            const data = snap.val(); 
+            if(!data) { statTotal.innerText = "0"; return; }
+            
+            const myKeys = Object.keys(data).filter(id => data[id].uid === currentUser.uid);
+            statTotal.innerText = myKeys.length;
+            
+            myKeys.sort((a,b) => data[b].createdAt - data[a].createdAt).forEach(id => {
+                const item = document.createElement('div'); item.className = 'tournament-item';
+                item.innerHTML = `<div onclick="openEvent('${id}')" style="cursor:pointer; flex:1;">
+                    <div style="font-weight:bold; color:#fff;">${data[id].name}</div>
+                    <div style="font-size:0.65rem; color:var(--gold);">${data[id].mode.toUpperCase()} • ${data[id].players.length} SPIELER</div>
+                </div>
+                <button class="btn-delete" onclick="deleteEvent('${id}')">LÖSCHEN</button>`;
+                list.appendChild(item);
+            });
+        });
+    }
+
+    // --- SPIEL LOGIK ---
     window.showView = (id) => {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.getElementById(id).classList.add('active');
     };
 
-    onValue(ref(db, 'all_events'), (snap) => {
-        const list = document.getElementById('tournament-list'); 
-        const statTotal = document.getElementById('stat-total-events');
-        list.innerHTML = "";
-        const data = snap.val(); 
-        if(!data) {
-            statTotal.innerText = "0";
-            return;
-        }
-        const keys = Object.keys(data);
-        statTotal.innerText = keys.length;
-        keys.sort((a,b) => data[b].createdAt - data[a].createdAt).forEach(id => {
-            const item = document.createElement('div'); item.className = 'tournament-item';
-            item.innerHTML = `<div onclick="openEvent('${id}')" style="cursor:pointer; flex:1;">
-                <div style="font-weight:bold; font-size:1rem; color:#fff;">${data[id].name}</div>
-                <div style="font-size:0.65rem; color:var(--gold); margin-top:4px;">${data[id].mode.toUpperCase()} • ${data[id].players.length} SPIELER</div>
-            </div>
-            <button class="btn-delete" onclick="deleteEvent('${id}')">LÖSCHEN</button>`;
-            list.appendChild(item);
-        });
-    });
+    window.toggleGroupOptions = () => {
+        const mode = document.getElementById('event-mode').value;
+        document.getElementById('group-options').style.display = (mode === 'groups') ? 'block' : 'none';
+    };
 
     window.deleteEvent = (id) => { if(confirm("Event wirklich löschen?")) remove(ref(db, 'all_events/' + id)); };
 
@@ -197,12 +269,11 @@
         const players = document.getElementById('event-players').value.split(',').map(s => s.trim()).filter(s => s !== "");
         if(!name || players.length < 2) return alert("Daten unvollständig!");
 
-        let eventData = { name, mode, players, createdAt: Date.now(), finals: {unlocked: false} };
+        let eventData = { name, mode, players, uid: currentUser.uid, createdAt: Date.now(), finals: {unlocked: false} };
 
         if(mode === 'knockout') {
             eventData.koRounds = createKOBracket(players);
             eventData.finals.unlocked = true;
-            checkAllFreilosLocally(eventData.koRounds);
         } else {
             const pairs = [];
             for(let i=0; i<players.length; i++) for(let j=i+1; j<players.length; j++) pairs.push({p1:players[i], p2:players[j], s1:"", s2:""});
@@ -237,33 +308,11 @@
         return rounds;
     }
 
-    function checkAllFreilosLocally(rounds) {
-        const roundKeys = Object.keys(rounds).sort((a,b) => a.localeCompare(b, undefined, {numeric: true}));
-        roundKeys.forEach((rKey) => {
-            rounds[rKey].forEach((m, i) => {
-                let winner = null;
-                if (m.p2 === "FREILOS" && m.p1 !== "?" && m.p1 !== "FREILOS") { m.s1 = "1"; m.s2 = "0"; winner = m.p1; }
-                else if (m.p1 === "FREILOS" && m.p2 !== "?" && m.p2 !== "FREILOS") { m.s1 = "0"; m.s2 = "1"; winner = m.p2; }
-                
-                if(winner) {
-                    const nextR = "Runde_" + (parseInt(rKey.split('_')[1]) + 1);
-                    if(rounds[nextR]) {
-                        const nextIdx = Math.floor(i / 2);
-                        const slot = (i % 2 === 0) ? 'p1' : 'p2';
-                        rounds[nextR][nextIdx][slot] = winner;
-                    }
-                }
-            });
-        });
-    }
-
     window.openEvent = (id) => {
         currentId = id; showView('view-event');
         onValue(ref(db, 'all_events/' + id), (snap) => {
             const ev = snap.val(); if(!ev) return;
             document.getElementById('active-event-title').innerHTML = `<span>${ev.name}</span>`;
-            document.querySelectorAll('.day-content.active').forEach(el => openDays.add(el.id));
-
             if(ev.mode === 'knockout') {
                 document.getElementById('league-container').style.display = 'none';
                 document.getElementById('ko-container').style.display = 'block';
@@ -273,16 +322,6 @@
                 document.getElementById('ko-container').style.display = 'none';
                 renderLeague(ev);
             }
-
-            openDays.forEach(id => {
-                const el = document.getElementById(id);
-                if(el) {
-                    el.classList.add('active');
-                    const idx = id.split('-').pop();
-                    const arrow = document.getElementById(`arrow-${idx}`);
-                    if(arrow) arrow.textContent = '▲';
-                }
-            });
         });
     };
 
@@ -299,175 +338,32 @@
             });
         });
         stats.sort((a,b) => b.pkt - a.pkt || b.diff - a.diff);
-        document.getElementById('league-table-area').innerHTML = `<div class="table-wrapper"><table><thead><tr><th>#</th><th style="text-align:left">Spieler</th><th>SP.</th><th>+/-</th><th>PKT.</th></tr></thead><tbody>${stats.map((s,i) => `<tr><td class="rank-cell ${i<4?'qualify':''}">${i+1}</td><td style="text-align:left; font-weight:bold;">${s.name}</td><td>${s.sp}</td><td>${s.diff}</td><td><strong>${s.pkt}</strong></td></tr>`).join('')}</tbody></table></div>`;
+        document.getElementById('league-table-area').innerHTML = `<div class="table-wrapper"><table><thead><tr><th>#</th><th style="text-align:left">Spieler</th><th>SP.</th><th>+/-</th><th>PKT.</th></tr></thead><tbody>${stats.map((s,i) => `<tr><td>${i+1}</td><td style="text-align:left; font-weight:bold;">${s.name}</td><td>${s.sp}</td><td>${s.diff}</td><td><strong>${s.pkt}</strong></td></tr>`).join('')}</tbody></table></div>`;
         
-        // BESTLEISTUNGEN TABELLE RENDERN
-        if(ev.mode === 'league') {
-            document.getElementById('records-area').style.display = 'block';
-            let recHTML = "";
-            const currentRecs = ev.playerRecords || {};
-            ev.players.forEach(p => {
-                const r = currentRecs[p] || { m180: 0, hf: 0, sl: 0 };
-                recHTML += `<tr>
-                    <td style="text-align:left; font-weight:bold; font-size:0.8rem;">${p}</td>
-                    <td><button class="rec-btn" onclick="modRec('${p}','m180',1)">180er</button><span class="rec-num" onclick="modRec('${p}','m180',-1)">${r.m180}</span></td>
-                    <td><button class="rec-btn" onclick="modRec('${p}','hf',1)">HF</button><span class="rec-num" onclick="modRec('${p}','hf',-1)">${r.hf}</span></td>
-                    <td><button class="rec-btn" onclick="modRec('${p}','sl',1)">SL</button><span class="rec-num" onclick="modRec('${p}','sl',-1)">${r.sl}</span></td>
-                </tr>`;
-            });
-            document.getElementById('records-body').innerHTML = recHTML;
-        } else {
-            document.getElementById('records-area').style.display = 'none';
-        }
-
         let h = "";
         ev.days.forEach((day, dIdx) => {
-            h += `<div class="day-section"><div class="day-header" onclick="toggleDay(${dIdx})"><strong>${day.round}</strong><div class="header-actions"><span id="arrow-${dIdx}">▼</span><span class="lock-icon" onclick="handleLock(event, ${dIdx}, ${day.locked})">${day.locked ? '🔒' : '🔓'}</span></div></div><div id="day-content-${dIdx}" class="day-content">${day.matches.map((m, mIdx) => `<div class="match-row"><div>${m.p1}</div><div class="score-box"><input type="number" value="${m.s1}" ${day.locked?'disabled':''} onchange="updateScore(${dIdx}, ${mIdx}, 's1', this.value)">:<input type="number" value="${m.s2}" ${day.locked?'disabled':''} onchange="updateScore(${dIdx}, ${mIdx}, 's2', this.value)"></div><div>${m.p2}</div></div>`).join('')}</div></div>`;
+            h += `<div class="day-section"><div class="day-header" onclick="toggleDay(${dIdx})"><strong>${day.round}</strong><div><span id="arrow-${dIdx}">▼</span></div></div><div id="day-content-${dIdx}" class="day-content">${day.matches.map((m, mIdx) => `<div class="match-row"><div>${m.p1}</div><div class="score-box"><input type="number" value="${m.s1}" onchange="updateScore(${dIdx}, ${mIdx}, 's1', this.value)">:<input type="number" value="${m.s2}" onchange="updateScore(${dIdx}, ${mIdx}, 's2', this.value)"></div><div>${m.p2}</div></div>`).join('')}</div></div>`;
         });
         document.getElementById('schedule-content').innerHTML = h;
-        if(!ev.finals || !ev.finals.unlocked) {
-            document.getElementById('schedule-content').innerHTML += `<button class="primary" onclick="unlockLeagueFinals('${stats[0].name}','${stats[1].name}','${stats[2].name}','${stats[3].name}')">🏆 FINALTURNIER STARTEN</button>`;
-            document.getElementById('final-area').style.display = 'none';
-        } else {
-            document.getElementById('final-area').style.display = 'block';
-            renderFinalMatches(ev.finals);
-        }
     }
 
-    // FUNKTION ZUM ERHÖHEN/VERRINGERN DER REKORDE
-    window.modRec = (player, type, val) => {
-        get(ref(db, `all_events/${currentId}/playerRecords/${player}/${type}`)).then(snap => {
-            let current = snap.val() || 0;
-            let newVal = current + val;
-            if(newVal < 0) newVal = 0; // Keine negativen Werte
-            update(ref(db, `all_events/${currentId}/playerRecords/${player}`), { [type]: newVal });
-        });
-    };
-
-    window.handleLock = (e, dIdx, isLocked) => { e.stopPropagation(); if(!isLocked) update(ref(db, `all_events/${currentId}/days/${dIdx}`), { locked: true }); else if(prompt("PIN:") === PW) update(ref(db, `all_events/${currentId}/days/${dIdx}`), { locked: false }); };
-    
     window.toggleDay = (idx) => { 
-        const id = `day-content-${idx}`;
-        const el = document.getElementById(id); 
+        const el = document.getElementById(`day-content-${idx}`); 
         const isActive = el.classList.toggle('active'); 
         document.getElementById(`arrow-${idx}`).textContent = isActive ? '▲' : '▼'; 
-        if(isActive) openDays.add(id); else openDays.delete(id);
     };
 
     window.updateScore = (dIdx, mIdx, side, val) => update(ref(db, `all_events/${currentId}/days/${dIdx}/matches/${mIdx}`), { [side]: val });
 
-    window.unlockLeagueFinals = (p1, p2, p3, p4) => {
-        set(ref(db, `all_events/${currentId}/finals`), { unlocked: true, semi1: {p1, p2:p4, s1:"", s2:""}, semi2: {p1:p2, p2:p3, s1:"", s2:""}, final: {p1:"?", p2:"?", s1:"", s2:""} });
-    };
-
-    function renderFinalMatches(f) {
-        document.getElementById('final-area').innerHTML = `
-        <div style="margin-top:40px; padding:25px; border:2px solid var(--gold); border-radius:20px; background:rgba(0,0,0,0.5);">
-            <h2 style="text-align:center; color:var(--gold);">🏆 FINALTAG</h2>
-            <div class="ko-round-title">Halbfinale</div>
-            <div class="final-match">
-                <div>${f.semi1.p1}</div>
-                <div class="score-box">
-                    <input type="number" value="${f.semi1.s1}" onchange="updateF('semi1','s1',this.value)">:
-                    <input type="number" value="${f.semi1.s2}" onchange="updateF('semi1','s2',this.value)">
-                </div>
-                <div>${f.semi1.p2}</div>
-            </div>
-            <div class="final-match">
-                <div>${f.semi2.p1}</div>
-                <div class="score-box">
-                    <input type="number" value="${f.semi2.s1}" onchange="updateF('semi2','s1',this.value)">:
-                    <input type="number" value="${f.semi2.s2}" onchange="updateF('semi2','s2',this.value)">
-                </div>
-                <div>${f.semi2.p2}</div>
-            </div>
-            <div class="ko-round-title">FINALE</div>
-            <div class="final-match" style="background:rgba(212,175,55,0.1); padding:20px; border-radius:12px;">
-                <div style="font-weight:bold;">${f.final.p1}</div>
-                <div class="score-box">
-                    <input type="number" value="${f.final.s1}" onchange="updateF('final','s1',this.value)">:
-                    <input type="number" value="${f.final.s2}" onchange="updateF('final','s2',this.value)">
-                </div>
-                <div style="font-weight:bold;">${f.final.p2}</div>
-            </div>
-            <button style="margin-top:20px; color:var(--danger); background:none; border:none; cursor:pointer; width:100%; font-size:0.75rem;" onclick="resetFinals()">❌ FINALTAG ABBRECHEN & ZURÜCK</button>
-        </div>`;
-    }
-
-    window.resetFinals = () => { 
-        if(confirm("Finaltag abbrechen und zur Tabelle zurückkehren? Alle Finalergebnisse werden gelöscht.")) {
-            update(ref(db, `all_events/${currentId}/finals`), { unlocked: false });
-        }
-    };
-
-    window.updateF = (m, s, v) => {
-        update(ref(db, `all_events/${currentId}/finals/${m}`), { [s]: v }).then(() => {
-            onValue(ref(db, `all_events/${currentId}/finals`), (snap) => {
-                const f = snap.val(); let w1 = "?", w2 = "?";
-                if(f.semi1.s1 && f.semi1.s2) w1 = parseInt(f.semi1.s1) > parseInt(f.semi1.s2) ? f.semi1.p1 : f.semi1.p2;
-                if(f.semi2.s1 && f.semi2.s2) w2 = parseInt(f.semi2.s1) > parseInt(f.semi2.s2) ? f.semi2.p1 : f.semi2.p2;
-                if(f.final.p1 !== w1 || f.final.p2 !== w2) update(ref(db, `all_events/${currentId}/finals/final`), { p1: w1, p2: w2 });
-            }, {onlyOnce: true});
-        });
-    };
-
     function renderKO(rounds) {
         let h = `<h2 style="text-align:center; color:var(--gold);">🏆 TURNIER-BAUM</h2>`;
         Object.keys(rounds).sort((a,b) => a.localeCompare(b, undefined, {numeric: true})).forEach(r => {
-            h += `<div class="ko-round-title">${r.replace('_',' ')}</div>`;
+            h += `<div style="color:var(--gold); text-align:center; margin-top:20px; text-transform:uppercase; font-size:0.8rem;">${r.replace('_',' ')}</div>`;
             rounds[r].forEach((m, i) => {
-                h += `<div class="match-row">
-                    <div>${m.p1}</div>
-                    <div class="score-box"><input type="number" value="${m.s1}" onchange="updateKO('${r}', ${i}, 's1', this.value)">:<input type="number" value="${m.s2}" onchange="updateKO('${r}', ${i}, 's2', this.value)"></div>
-                    <div>${m.p2}</div>
-                </div>`;
+                h += `<div class="match-row"><div>${m.p1}</div><div class="score-box"><input type="number" value="${m.s1}" onchange="updateKO('${r}', ${i}, 's1', this.value)">:<input type="number" value="${m.s2}" onchange="updateKO('${r}', ${i}, 's2', this.value)"></div><div>${m.p2}</div></div>`;
             });
         });
         document.getElementById('ko-container').innerHTML = h;
-    }
-
-    window.updateKO = (r, i, s, v) => {
-        update(ref(db, `all_events/${currentId}/koRounds/${r}/${i}`), { [s]: v }).then(() => {
-            get(ref(db, `all_events/${currentId}/koRounds`)).then((snap) => {
-                const allRounds = snap.val();
-                const m = allRounds[r][i];
-                if(m.s1 !== "" && m.s2 !== "" && m.p1 !== "?" && m.p2 !== "?") {
-                    const winner = parseInt(m.s1) > parseInt(m.s2) ? m.p1 : m.p2;
-                    const nextRKey = "Runde_" + (parseInt(r.split('_')[1]) + 1);
-                    const nextIdx = Math.floor(i / 2);
-                    const slot = (i % 2 === 0) ? 'p1' : 'p2';
-                    
-                    if(allRounds[nextRKey]) {
-                        update(ref(db, `all_events/${currentId}/koRounds/${nextRKey}/${nextIdx}`), { [slot]: winner }).then(() => {
-                            setTimeout(() => triggerFreilosCheck(nextRKey, nextIdx), 300);
-                        });
-                    }
-                }
-            });
-        });
-    };
-
-    function triggerFreilosCheck(rKey, i) {
-        get(ref(db, `all_events/${currentId}/koRounds/${rKey}/${i}`)).then(snap => {
-            const m = snap.val();
-            if(!m) return;
-            let winner = null;
-            if(m.p2 === "FREILOS" && m.p1 !== "?" && m.p1 !== "FREILOS") { winner = m.p1; update(ref(db, `all_events/${currentId}/koRounds/${rKey}/${i}`), {s1: "1", s2: "0"}); }
-            else if(m.p1 === "FREILOS" && m.p2 !== "?" && m.p2 !== "FREILOS") { winner = m.p2; update(ref(db, `all_events/${currentId}/koRounds/${rKey}/${i}`), {s1: "0", s2: "1"}); }
-            
-            if(winner) {
-                const nextRKey = "Runde_" + (parseInt(rKey.split('_')[1]) + 1);
-                const nextIdx = Math.floor(i / 2);
-                const slot = (i % 2 === 0) ? 'p1' : 'p2';
-                get(ref(db, `all_events/${currentId}/koRounds/${nextRKey}`)).then(nextSnap => {
-                    if(nextSnap.exists()) {
-                        update(ref(db, `all_events/${currentId}/koRounds/${nextRKey}/${nextIdx}`), { [slot]: winner }).then(() => {
-                            setTimeout(() => triggerFreilosCheck(nextRKey, nextIdx), 300);
-                        });
-                    }
-                });
-            }
-        });
     }
 </script>
 </body>
