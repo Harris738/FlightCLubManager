@@ -109,6 +109,9 @@
             
             <div id="login-actions">
                 <button class="primary" onclick="handleAuth('login')">LOGIN</button>
+                <button class="primary" onclick="loginWithGoogle()" style="background: white; color: #444; margin-top: 10px;">
+                    G MIT GOOGLE ANMELDEN
+                </button>
                 <p class="info-text">
                     <span class="auth-link" onclick="forgotPassword()">Passwort vergessen?</span><br><br>
                     Noch kein Konto? <span class="auth-link" onclick="toggleAuthMode(true)">Hier registrieren</span>
@@ -222,7 +225,8 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, push, onValue, update, remove, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, sendPasswordResetEmail, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    // GOOGLE PROVIDER HINZUGEFÜGT
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, sendPasswordResetEmail, updateEmail, updatePassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBz_CsnVtihY_wuAgzxRHK4Y8D57DQAd2M",
@@ -264,6 +268,19 @@
         } else {
             signInWithEmailAndPassword(auth, email, pass).catch(e => errEl.innerText = "Login fehlgeschlagen.");
         }
+    };
+
+    // GOOGLE LOGIN FUNKTION HINZUGEFÜGT
+    window.loginWithGoogle = () => {
+        const provider = new GoogleAuthProvider();
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                console.log("Google Login erfolgreich");
+            })
+            .catch((error) => {
+                document.getElementById('auth-error').innerText = "Google Login fehlgeschlagen oder abgebrochen.";
+                console.error(error);
+            });
     };
 
     window.forgotPassword = () => {
