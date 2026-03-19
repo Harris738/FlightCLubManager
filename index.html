@@ -271,16 +271,30 @@
     };
 
     // GOOGLE LOGIN FUNKTION HINZUGEFÜGT
-    window.loginWithGoogle = () => {
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                console.log("Google Login erfolgreich");
-            })
-            .catch((error) => {
-                document.getElementById('auth-error').innerText = "Google Login fehlgeschlagen oder abgebrochen.";
-                console.error(error);
-            });
+   // 1. Die Login-Funktion (Jetzt mit Redirect statt Popup)
+window.loginWithGoogle = () => {
+    const provider = new GoogleAuthProvider();
+    // Redirect ist deutlich stabiler für GitHub Pages & Mobile
+    signInWithRedirect(auth, provider);
+};
+
+// 2. Das Ergebnis nach der Rückkehr von Google abfangen
+// Diesen Teil einfach irgendwo in deinem <script type="module"> platzieren
+getRedirectResult(auth)
+    .then((result) => {
+        if (result) {
+            console.log("Google Login via Redirect erfolgreich:", result.user.displayName);
+            // Dein onAuthStateChanged Listener erledigt den Rest (Dashboard zeigen)
+        }
+    })
+    .catch((error) => {
+        console.error("Redirect Fehler:", error);
+        if (error.code === 'auth/unauthorized-domain') {
+            document.getElementById('auth-error').innerText = "Domain nicht autorisiert in Firebase!";
+        } else {
+            document.getElementById('auth-error').innerText = "Google Login fehlgeschlagen.";
+        }
+    });
     };
 
     window.forgotPassword = () => {
