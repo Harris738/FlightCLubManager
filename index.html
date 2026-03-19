@@ -226,7 +226,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, push, onValue, update, remove, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
     // GOOGLE PROVIDER HINZUGEFÜGT
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, sendPasswordResetEmail, updateEmail, updatePassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, sendPasswordResetEmail, updateEmail, updatePassword, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBz_CsnVtihY_wuAgzxRHK4Y8D57DQAd2M",
@@ -270,32 +270,27 @@
         }
     };
 
-    // GOOGLE LOGIN FUNKTION HINZUGEFÜGT
-   // 1. Die Login-Funktion (Jetzt mit Redirect statt Popup)
+// Google Login Funktion (Global verfügbar machen)
 window.loginWithGoogle = () => {
     const provider = new GoogleAuthProvider();
-    // Redirect ist deutlich stabiler für GitHub Pages & Mobile
+    // Nutze Redirect für bessere Kompatibilität auf GitHub Pages
     signInWithRedirect(auth, provider);
 };
 
-// 2. Das Ergebnis nach der Rückkehr von Google abfangen
-// Diesen Teil einfach irgendwo in deinem <script type="module"> platzieren
+// Das Ergebnis des Redirects beim Laden der Seite abfangen
 getRedirectResult(auth)
     .then((result) => {
         if (result) {
-            console.log("Google Login via Redirect erfolgreich:", result.user.displayName);
-            // Dein onAuthStateChanged Listener erledigt den Rest (Dashboard zeigen)
+            console.log("Google Login erfolgreich:", result.user.displayName);
+            // onAuthStateChanged kümmert sich um den Rest
         }
     })
     .catch((error) => {
-        console.error("Redirect Fehler:", error);
-        if (error.code === 'auth/unauthorized-domain') {
-            document.getElementById('auth-error').innerText = "Domain nicht autorisiert in Firebase!";
-        } else {
-            document.getElementById('auth-error').innerText = "Google Login fehlgeschlagen.";
+        console.error("Fehler beim Google Redirect:", error);
+        if (error.code !== 'auth/redirect-cancelled-by-user') {
+            document.getElementById('auth-error').innerText = "Google Login Fehler: " + error.message;
         }
     });
-    };
 
     window.forgotPassword = () => {
         const email = document.getElementById('auth-email').value;
