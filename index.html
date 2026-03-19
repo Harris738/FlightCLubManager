@@ -35,6 +35,7 @@
         
         button.primary { background: var(--btn-grad); color: #000; font-weight: 900; border: none; cursor: pointer; padding: 16px; border-radius: 12px; width: 100%; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
         .btn-delete { background: none; border: 1px solid #333; color: #555; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
+        .btn-profile { background: rgba(255,255,255,0.1); border: 1px solid var(--gold); color: var(--gold); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.7rem; font-weight: bold; margin-right: 5px; }
 
         .table-wrapper { width: 100%; overflow-x: auto; border-radius: 12px; background: rgba(0,0,0,0.4); border: 1px solid #333; margin-bottom: 25px; }
         table { width: 100%; border-collapse: collapse; }
@@ -51,37 +52,26 @@
         .day-content.active { display: block; }
 
         .match-row, .final-match { 
-            padding: 12px 5px; 
-            display: grid; 
-            grid-template-columns: 1fr 110px 1fr; 
-            align-items: center; 
-            border-bottom: 1px solid #222; 
-            gap: 10px; 
+            padding: 12px 5px; display: grid; grid-template-columns: 1fr 110px 1fr; align-items: center; border-bottom: 1px solid #222; gap: 10px; 
         }
-        .match-row > div:first-child, .final-match > div:first-child { 
-            text-align: right; 
-            font-weight: 500;
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            white-space: nowrap; 
-        }
-        .match-row > div:last-child, .final-match > div:last-child { 
-            text-align: left; 
-            font-weight: 500;
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            white-space: nowrap; 
-        }
+        .match-row > div:first-child, .final-match > div:first-child { text-align: right; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .match-row > div:last-child, .final-match > div:last-child { text-align: left; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
         .score-box { display: flex; justify-content: center; align-items: center; gap: 4px; width: 110px; margin: 0 auto; }
         .score-box input { width: 42px; height: 38px; text-align: center; font-size: 1.1rem; font-weight: bold; color: var(--bright-gold); background: #000; border: 1px solid #444; border-radius: 8px; padding: 0; box-sizing: border-box; }
         
-        .ko-round-title { color: var(--gold); text-align: center; margin: 30px 0 10px 0; text-transform: uppercase; font-size: 0.9rem; border-bottom: 1px solid #333; padding-bottom: 5px; }
         .view { display: none; } .view.active { display: block; }
         .back-btn { background: none; color: var(--gold); border: 1px solid var(--gold); padding: 8px 15px; cursor: pointer; border-radius: 8px; margin-bottom: 15px; }
         
         select, input[type="text"], input[type="password"], textarea { width:100%; padding:12px; background:#111; color:white; border:1px solid #444; border-radius:8px; margin-bottom:15px; box-sizing:border-box; }
         .auth-link { color: var(--gold); text-decoration: none; font-weight: bold; cursor: pointer; }
+        .info-text { font-size: 0.8rem; color: #888; text-align: center; margin-top: 10px; }
+        
+        /* Profilbild Styles */
+        .profile-pic-container { position: relative; display: inline-block; margin-bottom: 20px; }
+        .profile-pic { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; background: #222; display: block; }
+        .profile-upload-label { position: absolute; bottom: 0; right: 0; background: var(--gold); color: #000; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; border: 2px solid #000; }
+        .dash-profile-img { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--gold); object-fit: cover; margin-right: 10px; vertical-align: middle; }
     </style>
 </head>
 <body>
@@ -101,14 +91,15 @@
             
             <div id="login-actions">
                 <button class="primary" onclick="handleAuth('login')">LOGIN</button>
-                <p style="font-size: 0.8rem; margin-top: 15px; color: #888; text-align: center;">
+                <p class="info-text">
+                    <span class="auth-link" onclick="forgotPassword()">Passwort vergessen?</span><br><br>
                     Noch kein Konto? <span class="auth-link" onclick="toggleAuthMode(true)">Hier registrieren</span>
                 </p>
             </div>
 
             <div id="register-actions" style="display: none;">
                 <button class="primary" onclick="handleAuth('register')">JETZT REGISTRIEREN</button>
-                <p style="font-size: 0.8rem; margin-top: 15px; color: #888; text-align: center;">
+                <p class="info-text">
                     Bereits registriert? <span class="auth-link" onclick="toggleAuthMode(false)">Zum Login</span>
                 </p>
             </div>
@@ -120,7 +111,11 @@
     <div id="view-dashboard" class="view">
         <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h1 style="margin:0; font-size: 1.2rem;"><span class="fc-gold">FLIGHTCLUB</span> <span class="mg-white">MANAGER</span></h1>
-            <button class="btn-delete" onclick="handleLogout()">LOGOUT</button>
+            <div style="display: flex; align-items: center;">
+                <img id="dash-img" class="dash-profile-img" src="https://via.placeholder.com/50" onclick="showView('view-profile')" style="cursor: pointer;">
+                <button class="btn-profile" onclick="showView('view-profile')">PROFIL</button>
+                <button class="btn-delete" onclick="handleLogout()">LOGOUT</button>
+            </div>
         </div>
         <div class="stats-grid">
             <div class="stat-card">
@@ -137,6 +132,30 @@
         </div>
         <div class="section-title">Deine Events</div>
         <div id="tournament-list"></div>
+    </div>
+
+    <div id="view-profile" class="view">
+        <button class="back-btn" onclick="showView('view-dashboard')">← ZURÜCK</button>
+        <h2>👤 <span>Profil Einstellungen</span></h2>
+        
+        <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; border: 1px solid #333; text-align: center;">
+            
+            <div class="profile-pic-container">
+                <img id="profile-img-preview" class="profile-pic" src="https://via.placeholder.com/100">
+                <label for="profile-upload" class="profile-upload-label">+</label>
+                <input type="file" id="profile-upload" accept="image/*" style="display: none;" onchange="handleImageUpload(this)">
+            </div>
+            <p id="upload-status" style="font-size: 0.7rem; color: var(--gold); margin-bottom: 20px;">Bild zum Ändern antippen</p>
+
+            <label style="font-size: 0.7rem; color: var(--gold); display: block; margin-bottom: 5px; text-align: left;">E-MAIL ADRESSE ÄNDERN</label>
+            <input type="text" id="profile-email" placeholder="Neue E-Mail">
+            <button class="primary" style="margin-bottom: 25px; padding: 10px;" onclick="updateUserEmail()">E-MAIL AKTUALISIEREN</button>
+
+            <label style="font-size: 0.7rem; color: var(--gold); display: block; margin-bottom: 5px; text-align: left;">PASSWORT ÄNDERN</label>
+            <input type="password" id="profile-pass" placeholder="Neues Passwort">
+            <button class="primary" style="padding: 10px;" onclick="updateUserPassword()">PASSWORT AKTUALISIEREN</button>
+            <p id="profile-msg" style="text-align:center; font-size:0.8rem; margin-top:15px;"></p>
+        </div>
     </div>
 
     <div id="view-creator" class="view">
@@ -184,7 +203,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, push, onValue, update, remove, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, sendPasswordResetEmail, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAzR88gZehg9R4jZAVbb8xXtP9qXfXe-l4",
@@ -201,10 +220,9 @@
     const auth = getAuth(app);
     let currentId = null;
     let currentUser = null;
-    let openDays = new Set(); 
     const PW = "5869";
 
-    // --- LOGIN LOGIK ---
+    // --- AUTH LOGIK ---
     window.toggleAuthMode = (isRegistering) => {
         document.getElementById('username-wrapper').style.display = isRegistering ? 'block' : 'none';
         document.getElementById('login-actions').style.display = isRegistering ? 'none' : 'block';
@@ -229,16 +247,20 @@
         }
     };
 
-    // --- GEÄNDERTE LOGOUT LOGIK ---
+    window.forgotPassword = () => {
+        const email = document.getElementById('auth-email').value;
+        if(!email) return alert("Bitte E-Mail Adresse eingeben.");
+        sendPasswordResetEmail(auth, email)
+            .then(() => alert("Reset-Link wurde an deine E-Mail gesendet! (Spam-Ordner prüfen)"))
+            .catch(e => alert("Fehler: " + e.message));
+    };
+
     window.handleLogout = () => {
         signOut(auth).then(() => {
-            // Alle Eingabefelder im Login-Fenster leeren
             document.getElementById('auth-email').value = "";
             document.getElementById('auth-pass').value = "";
             document.getElementById('auth-username').value = "";
             document.getElementById('auth-error').innerText = "";
-        }).catch(error => {
-            console.error("Logout Fehler:", error);
         });
     };
 
@@ -246,6 +268,17 @@
         if (user) {
             currentUser = user;
             document.getElementById('stat-active-user').innerText = user.displayName || "User";
+            document.getElementById('profile-email').value = user.email;
+            
+            // Profilbild aus dem Auth-Profil laden
+            if (user.photoURL) {
+                document.getElementById('profile-img-preview').src = user.photoURL;
+                document.getElementById('dash-img').src = user.photoURL;
+            } else {
+                document.getElementById('profile-img-preview').src = "https://via.placeholder.com/100";
+                document.getElementById('dash-img').src = "https://via.placeholder.com/50";
+            }
+            
             showView('view-dashboard');
             initDashboard();
         } else {
@@ -253,6 +286,54 @@
             showView('view-login');
         }
     });
+
+    // --- PROFIL FUNKTIONEN (INKL. BASE64 UPLOAD) ---
+    window.handleImageUpload = (input) => {
+        const file = input.files[0];
+        if (!file) return;
+
+        // Bild verkleinern, damit die Datenbank-Strings nicht zu riesig werden
+        if (file.size > 1 * 1024 * 1024) {
+            alert("Das Bild ist zu groß. Bitte wähle ein Bild unter 1MB.");
+            return;
+        }
+
+        const reader = new FileReader();
+        const statusEl = document.getElementById('upload-status');
+        statusEl.innerText = "Verarbeite Bild...";
+
+        reader.onload = async (e) => {
+            const base64Image = e.target.result;
+            try {
+                await updateProfile(auth.currentUser, { photoURL: base64Image });
+                document.getElementById('profile-img-preview').src = base64Image;
+                document.getElementById('dash-img').src = base64Image;
+                statusEl.innerText = "Profilbild aktualisiert!";
+                statusEl.style.color = "var(--qualify-green)";
+            } catch (error) {
+                statusEl.innerText = "Fehler beim Speichern.";
+                console.error(error);
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+
+    window.updateUserEmail = () => {
+        const newEmail = document.getElementById('profile-email').value;
+        const msg = document.getElementById('profile-msg');
+        updateEmail(auth.currentUser, newEmail)
+            .then(() => { msg.innerText = "E-Mail erfolgreich geändert!"; msg.style.color = "var(--qualify-green)"; })
+            .catch(e => { msg.innerText = "Fehler: Erfordert evtl. neuen Login."; msg.style.color = "var(--danger)"; });
+    };
+
+    window.updateUserPassword = () => {
+        const newPass = document.getElementById('profile-pass').value;
+        const msg = document.getElementById('profile-msg');
+        if(newPass.length < 6) return alert("Passwort zu kurz!");
+        updatePassword(auth.currentUser, newPass)
+            .then(() => { msg.innerText = "Passwort erfolgreich geändert!"; msg.style.color = "var(--qualify-green)"; })
+            .catch(e => { msg.innerText = "Fehler: Erfordert evtl. neuen Login."; msg.style.color = "var(--danger)"; });
+    };
 
     // --- DASHBOARD & LISTE ---
     function initDashboard() {
@@ -262,10 +343,8 @@
             list.innerHTML = "";
             const data = snap.val(); 
             if(!data) { statTotal.innerText = "0"; return; }
-            
             const myKeys = Object.keys(data).filter(id => data[id].uid === currentUser.uid);
             statTotal.innerText = myKeys.length;
-            
             myKeys.sort((a,b) => data[b].createdAt - data[a].createdAt).forEach(id => {
                 const item = document.createElement('div'); item.className = 'tournament-item';
                 item.innerHTML = `<div onclick="openEvent('${id}')" style="cursor:pointer; flex:1;">
@@ -278,15 +357,13 @@
         });
     }
 
-    // --- EVENT GENERIERUNG ---
+    // --- EVENT LOGIK (Generierung) ---
     window.generateEvent = () => {
         const name = document.getElementById('event-name').value;
         const mode = document.getElementById('event-mode').value;
         const players = document.getElementById('event-players').value.split(',').map(s => s.trim()).filter(s => s !== "");
         if(!name || players.length < 2) return alert("Daten unvollständig!");
-
         let eventData = { name, mode, players, uid: currentUser.uid, createdAt: Date.now(), finals: {unlocked: false} };
-
         if(mode === 'knockout') {
             eventData.koRounds = createKOBracket(players);
             eventData.finals.unlocked = true;
@@ -297,7 +374,6 @@
             const multiplier = (mode === 'groups' && document.getElementById('group-rounds').value === "2") ? 2 : 1;
             let finalPairs = [...pairs];
             if(multiplier === 2) pairs.forEach(p => finalPairs.push({p1:p.p2, p2:p.p1, s1:"", s2:""}));
-            
             const count = (mode === 'league') ? 12 : 1;
             eventData.days = [];
             for(let d=1; d<=count; d++) {
@@ -307,7 +383,6 @@
         push(ref(db, 'all_events'), eventData).then(() => showView('view-dashboard'));
     };
 
-    // --- RESTLICHE FUNKTIONEN ---
     window.toggleGroupOptions = () => {
         const mode = document.getElementById('event-mode').value;
         document.getElementById('group-options').style.display = (mode === 'groups') ? 'block' : 'none';
@@ -316,6 +391,11 @@
     window.showView = (id) => {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.getElementById(id).classList.add('active');
+        if(id !== 'view-profile') {
+            document.getElementById('profile-msg').innerText = "";
+            document.getElementById('upload-status').innerText = "Bild zum Ändern antippen";
+            document.getElementById('upload-status').style.color = "var(--gold)";
+        }
     };
 
     window.deleteEvent = (id) => { if(confirm("Event wirklich löschen?")) remove(ref(db, 'all_events/' + id)); };
@@ -362,7 +442,6 @@
         onValue(ref(db, 'all_events/' + id), (snap) => {
             const ev = snap.val(); if(!ev) return;
             document.getElementById('active-event-title').innerHTML = `<span>${ev.name}</span>`;
-            document.querySelectorAll('.day-content.active').forEach(el => openDays.add(el.id));
             if(ev.mode === 'knockout') {
                 document.getElementById('league-container').style.display = 'none';
                 document.getElementById('ko-container').style.display = 'block';
@@ -372,10 +451,6 @@
                 document.getElementById('ko-container').style.display = 'none';
                 renderLeague(ev);
             }
-            openDays.forEach(id => {
-                const el = document.getElementById(id);
-                if(el) { el.classList.add('active'); const idx = id.split('-').pop(); const arrow = document.getElementById(`arrow-${idx}`); if(arrow) arrow.textContent = '▲'; }
-            });
         });
     };
 
@@ -403,17 +478,15 @@
                 recHTML += `<tr><td style="text-align:left; font-weight:bold; font-size:0.8rem;">${p}</td><td><button class="rec-btn" onclick="modRec('${p}','m180',1)">180er</button><span class="rec-num" onclick="modRec('${p}','m180',-1)">${r.m180}</span></td><td><button class="rec-btn" onclick="modRec('${p}','hf',1)">HF</button><span class="rec-num" onclick="modRec('${p}','hf',-1)">${r.hf}</span></td><td><button class="rec-btn" onclick="modRec('${p}','sl',1)">SL</button><span class="rec-num" onclick="modRec('${p}','sl',-1)">${r.sl}</span></td></tr>`;
             });
             document.getElementById('records-body').innerHTML = recHTML;
-        } else { document.getElementById('records-area').style.display = 'none'; }
-
+        }
         let h = "";
         ev.days.forEach((day, dIdx) => {
-            h += `<div class="day-section"><div class="day-header" onclick="toggleDay(${dIdx})"><strong>${day.round}</strong><div class="header-actions"><span id="arrow-${dIdx}">▼</span><span class="lock-icon" onclick="handleLock(event, ${dIdx}, ${day.locked})">${day.locked ? '🔒' : '🔓'}</span></div></div><div id="day-content-${dIdx}" class="day-content">${day.matches.map((m, mIdx) => `<div class="match-row"><div>${m.p1}</div><div class="score-box"><input type="number" value="${m.s1}" ${day.locked?'disabled':''} onchange="updateScore(${dIdx}, ${mIdx}, 's1', this.value)">:<input type="number" value="${m.s2}" ${day.locked?'disabled':''} onchange="updateScore(${dIdx}, ${mIdx}, 's2', this.value)"></div><div>${m.p2}</div></div>`).join('')}</div></div>`;
+            h += `<div class="day-section"><div class="day-header" onclick="toggleDay(${dIdx})"><strong>${day.round}</strong><div><span id="arrow-${dIdx}">▼</span><span class="lock-icon" onclick="handleLock(event, ${dIdx}, ${day.locked})">${day.locked ? '🔒' : '🔓'}</span></div></div><div id="day-content-${dIdx}" class="day-content">${day.matches.map((m, mIdx) => `<div class="match-row"><div>${m.p1}</div><div class="score-box"><input type="number" value="${m.s1}" ${day.locked?'disabled':''} onchange="updateScore(${dIdx}, ${mIdx}, 's1', this.value)">:<input type="number" value="${m.s2}" ${day.locked?'disabled':''} onchange="updateScore(${dIdx}, ${mIdx}, 's2', this.value)"></div><div>${m.p2}</div></div>`).join('')}</div></div>`;
         });
         document.getElementById('schedule-content').innerHTML = h;
         if(!ev.finals || !ev.finals.unlocked) {
             document.getElementById('schedule-content').innerHTML += `<button class="primary" onclick="unlockLeagueFinals('${stats[0].name}','${stats[1].name}','${stats[2].name}','${stats[3].name}')">🏆 FINALTURNIER STARTEN</button>`;
-            document.getElementById('final-area').style.display = 'none';
-        } else { document.getElementById('final-area').style.display = 'block'; renderFinalMatches(ev.finals); }
+        } else { renderFinalMatches(ev.finals); }
     }
 
     window.modRec = (player, type, val) => {
@@ -424,13 +497,11 @@
     };
 
     window.handleLock = (e, dIdx, isLocked) => { e.stopPropagation(); if(!isLocked) update(ref(db, `all_events/${currentId}/days/${dIdx}`), { locked: true }); else if(prompt("PIN:") === PW) update(ref(db, `all_events/${currentId}/days/${dIdx}`), { locked: false }); };
-    
     window.toggleDay = (idx) => { 
-        const id = `day-content-${idx}`; const el = document.getElementById(id); const isActive = el.classList.toggle('active'); 
+        const el = document.getElementById(`day-content-${idx}`); 
+        const isActive = el.classList.toggle('active'); 
         document.getElementById(`arrow-${idx}`).textContent = isActive ? '▲' : '▼'; 
-        if(isActive) openDays.add(id); else openDays.delete(id);
     };
-
     window.updateScore = (dIdx, mIdx, side, val) => update(ref(db, `all_events/${currentId}/days/${dIdx}/matches/${mIdx}`), { [side]: val });
 
     window.unlockLeagueFinals = (p1, p2, p3, p4) => {
@@ -441,32 +512,29 @@
         document.getElementById('final-area').innerHTML = `
         <div style="margin-top:40px; padding:25px; border:2px solid var(--gold); border-radius:20px; background:rgba(0,0,0,0.5);">
             <h2 style="text-align:center; color:var(--gold);">🏆 FINALTAG</h2>
-            <div class="ko-round-title">Halbfinale</div>
             <div class="final-match"><div>${f.semi1.p1}</div><div class="score-box"><input type="number" value="${f.semi1.s1}" onchange="updateF('semi1','s1',this.value)">:<input type="number" value="${f.semi1.s2}" onchange="updateF('semi1','s2',this.value)"></div><div>${f.semi1.p2}</div></div>
             <div class="final-match"><div>${f.semi2.p1}</div><div class="score-box"><input type="number" value="${f.semi2.s1}" onchange="updateF('semi2','s1',this.value)">:<input type="number" value="${f.semi2.s2}" onchange="updateF('semi2','s2',this.value)"></div><div>${f.semi2.p2}</div></div>
-            <div class="ko-round-title">FINALE</div>
             <div class="final-match" style="background:rgba(212,175,55,0.1); padding:20px; border-radius:12px;"><div style="font-weight:bold;">${f.final.p1}</div><div class="score-box"><input type="number" value="${f.final.s1}" onchange="updateF('final','s1',this.value)">:<input type="number" value="${f.final.s2}" onchange="updateF('final','s2',this.value)"></div><div style="font-weight:bold;">${f.final.p2}</div></div>
             <button style="margin-top:20px; color:var(--danger); background:none; border:none; cursor:pointer; width:100%; font-size:0.75rem;" onclick="resetFinals()">❌ FINALTAG ABBRECHEN</button>
         </div>`;
     }
 
     window.resetFinals = () => { if(confirm("Abbrechen?")) update(ref(db, `all_events/${currentId}/finals`), { unlocked: false }); };
-
     window.updateF = (m, s, v) => {
         update(ref(db, `all_events/${currentId}/finals/${m}`), { [s]: v }).then(() => {
-            onValue(ref(db, `all_events/${currentId}/finals`), (snap) => {
+            get(ref(db, `all_events/${currentId}/finals`)).then(snap => {
                 const f = snap.val(); let w1 = "?", w2 = "?";
                 if(f.semi1.s1 && f.semi1.s2) w1 = parseInt(f.semi1.s1) > parseInt(f.semi1.s2) ? f.semi1.p1 : f.semi1.p2;
                 if(f.semi2.s1 && f.semi2.s2) w2 = parseInt(f.semi2.s1) > parseInt(f.semi2.s2) ? f.semi2.p1 : f.semi2.p2;
                 if(f.final.p1 !== w1 || f.final.p2 !== w2) update(ref(db, `all_events/${currentId}/finals/final`), { p1: w1, p2: w2 });
-            }, {onlyOnce: true});
+            });
         });
     };
 
     function renderKO(rounds) {
         let h = `<h2 style="text-align:center; color:var(--gold);">🏆 TURNIER-BAUM</h2>`;
         Object.keys(rounds).sort((a,b) => a.localeCompare(b, undefined, {numeric: true})).forEach(r => {
-            h += `<div class="ko-round-title">${r.replace('_',' ')}</div>`;
+            h += `<div class="section-title" style="text-align:center;">${r.replace('_',' ')}</div>`;
             rounds[r].forEach((m, i) => {
                 h += `<div class="match-row"><div>${m.p1}</div><div class="score-box"><input type="number" value="${m.s1}" onchange="updateKO('${r}', ${i}, 's1', this.value)">:<input type="number" value="${m.s2}" onchange="updateKO('${r}', ${i}, 's2', this.value)"></div><div>${m.p2}</div></div>`;
             });
@@ -482,7 +550,7 @@
                     const winner = parseInt(m.s1) > parseInt(m.s2) ? m.p1 : m.p2;
                     const nextRKey = "Runde_" + (parseInt(r.split('_')[1]) + 1);
                     const nextIdx = Math.floor(i / 2); const slot = (i % 2 === 0) ? 'p1' : 'p2';
-                    if(allRounds[nextRKey]) update(ref(db, `all_events/${currentId}/koRounds/${nextRKey}/${nextIdx}`), { [slot]: winner }).then(() => setTimeout(() => triggerFreilosCheck(nextRKey, nextIdx), 300));
+                    if(allRounds[nextRKey]) update(ref(db, `all_events/${currentId}/koRounds/${nextRKey}/${nextIdx}`), { [slot]: winner }).then(() => triggerFreilosCheck(nextRKey, nextIdx));
                 }
             });
         });
@@ -498,7 +566,7 @@
                 const nextRKey = "Runde_" + (parseInt(rKey.split('_')[1]) + 1);
                 const nextIdx = Math.floor(i / 2); const slot = (i % 2 === 0) ? 'p1' : 'p2';
                 get(ref(db, `all_events/${currentId}/koRounds/${nextRKey}`)).then(nextSnap => {
-                    if(nextSnap.exists()) update(ref(db, `all_events/${currentId}/koRounds/${nextRKey}/${nextIdx}`), { [slot]: winner }).then(() => setTimeout(() => triggerFreilosCheck(nextRKey, nextIdx), 300));
+                    if(nextSnap.exists()) update(ref(db, `all_events/${currentId}/koRounds/${nextRKey}/${nextIdx}`), { [slot]: winner }).then(() => triggerFreilosCheck(nextRKey, nextIdx));
                 });
             }
         });
