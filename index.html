@@ -67,7 +67,6 @@
         .auth-link { color: var(--gold); text-decoration: none; font-weight: bold; cursor: pointer; }
         .info-text { font-size: 0.8rem; color: #888; text-align: center; margin-top: 10px; }
         
-        /* Profilbild Styles */
         .profile-pic-container { position: relative; display: inline-block; margin-bottom: 20px; }
         .profile-pic { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; background: #222; display: block; }
         .profile-upload-label { position: absolute; bottom: 0; right: 0; background: var(--gold); color: #000; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; border: 2px solid #000; }
@@ -270,7 +269,6 @@
             document.getElementById('stat-active-user').innerText = user.displayName || "User";
             document.getElementById('profile-email').value = user.email;
             
-            // Profilbild aus dem Auth-Profil laden
             if (user.photoURL) {
                 document.getElementById('profile-img-preview').src = user.photoURL;
                 document.getElementById('dash-img').src = user.photoURL;
@@ -287,33 +285,53 @@
         }
     });
 
-    // --- PROFIL FUNKTIONEN (INKL. BASE64 UPLOAD) ---
+    // --- PROFIL FUNKTIONEN (OPTIMIERT MIT BILD-KOMPRESSION) ---
     window.handleImageUpload = (input) => {
         const file = input.files[0];
         if (!file) return;
 
-        // Bild verkleinern, damit die Datenbank-Strings nicht zu riesig werden
-        if (file.size > 1 * 1024 * 1024) {
-            alert("Das Bild ist zu groß. Bitte wähle ein Bild unter 1MB.");
-            return;
-        }
-
-        const reader = new FileReader();
         const statusEl = document.getElementById('upload-status');
         statusEl.innerText = "Verarbeite Bild...";
+        statusEl.style.color = "var(--gold)";
 
-        reader.onload = async (e) => {
-            const base64Image = e.target.result;
-            try {
-                await updateProfile(auth.currentUser, { photoURL: base64Image });
-                document.getElementById('profile-img-preview').src = base64Image;
-                document.getElementById('dash-img').src = base64Image;
-                statusEl.innerText = "Profilbild aktualisiert!";
-                statusEl.style.color = "var(--qualify-green)";
-            } catch (error) {
-                statusEl.innerText = "Fehler beim Speichern.";
-                console.error(error);
-            }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                // Bild auf Canvas verkleinern (120x120px) für minimale Datengröße
+                const canvas = document.createElement('canvas');
+                const size = 120; 
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+
+                const scale = Math.max(size / img.width, size / img.height);
+                const x = (size - img.width * scale) / 2;
+                const y = (size - img.height * scale) / 2;
+                ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+
+                // Als komprimiertes JPG speichern
+                const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
+
+                updateProfile(auth.currentUser, { photoURL: compressedBase64 })
+                .then(() => {
+                    document.getElementById('profile-img-preview').src = compressedBase64;
+                    document.getElementById('dash-img').src = compressedBase64;
+                    statusEl.innerText = "Profilbild gespeichert!";
+                    statusEl.style.color = "var(--qualify-green)";
+                })
+                .catch(error => {
+                    console.error("Firebase Error:", error);
+                    if (error.code === "auth/requires-recent-login") {
+                        statusEl.innerText = "Sicherheit: Bitte neu einloggen!";
+                        alert("Sicherheitsmaßnahme: Bitte logge dich einmal aus und wieder ein, um das Bild zu ändern.");
+                    } else {
+                        statusEl.innerText = "Fehler: " + error.code;
+                    }
+                    statusEl.style.color = "var(--danger)";
+                });
+            };
+            img.src = e.target.result;
         };
         reader.readAsDataURL(file);
     };
