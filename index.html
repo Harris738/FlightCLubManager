@@ -23,19 +23,8 @@
         h1 .mg-white { color: #ffffff; }
         h2 span { background: linear-gradient(to bottom, #fff, var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* Optimierter Header Bereich */
-        .header-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            gap: 10px;
-        }
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; gap: 10px; }
+        .header-controls { display: flex; align-items: center; gap: 8px; }
 
         @media (max-width: 480px) { 
             h1 { font-size: 1.2rem; } 
@@ -109,9 +98,6 @@
             
             <div id="login-actions">
                 <button class="primary" onclick="handleAuth('login')">LOGIN</button>
-                <button class="primary" onclick="loginWithGoogle()" style="background: white; color: #444; margin-top: 10px;">
-                     MIT GOOGLE ANMELDEN
-                </button>
                 <p class="info-text">
                     <span class="auth-link" onclick="forgotPassword()">Passwort vergessen?</span><br><br>
                     Noch kein Konto? <span class="auth-link" onclick="toggleAuthMode(true)">Hier registrieren</span>
@@ -161,7 +147,6 @@
         <h2>👤 <span>Profil Einstellungen</span></h2>
         
         <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; border: 1px solid #333; text-align: center;">
-            
             <div class="profile-pic-container">
                 <img id="profile-img-preview" class="profile-pic" src="https://via.placeholder.com/100">
                 <label for="profile-upload" class="profile-upload-label">+</label>
@@ -225,8 +210,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, push, onValue, update, remove, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-    // GOOGLE PROVIDER HINZUGEFÜGT
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, sendPasswordResetEmail, updateEmail, updatePassword, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, sendPasswordResetEmail, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBz_CsnVtihY_wuAgzxRHK4Y8D57DQAd2M",
@@ -241,7 +225,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const auth = getAuth(app);
-    auth.config.authDomain = "flightclub-pro-db.firebaseapp.com";
+    
     let currentId = null;
     let currentUser = null;
     const PW = "5869";
@@ -270,18 +254,6 @@
             signInWithEmailAndPassword(auth, email, pass).catch(e => errEl.innerText = "Login fehlgeschlagen.");
         }
     };
-auth.config.authDomain = "flightclub-pro-db.firebaseapp.com";
-window.loginWithGoogle = () => {
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
-        .then((result) => {
-            console.log("Google Login erfolgreich:", result.user.displayName);
-        })
-        .catch((error) => {
-            console.error("Google Login Fehler:", error.code);
-            document.getElementById('auth-error').innerText = "Fehler: " + error.message;
-        });
-};
 
     window.forgotPassword = () => {
         const email = document.getElementById('auth-email').value;
@@ -321,27 +293,22 @@ window.loginWithGoogle = () => {
     window.handleImageUpload = (input) => {
         const file = input.files[0];
         if (!file) return;
-
         const statusEl = document.getElementById('upload-status');
         statusEl.innerText = "Verarbeite Bild...";
         statusEl.style.color = "var(--gold)";
-
         const reader = new FileReader();
         reader.onload = (e) => {
             const img = new Image();
             img.onload = () => {
                 const canvas = document.createElement('canvas');
                 const size = 150; 
-                canvas.width = size;
-                canvas.height = size;
+                canvas.width = size; canvas.height = size;
                 const ctx = canvas.getContext('2d');
                 const scale = Math.max(size / img.width, size / img.height);
                 const x = (size - img.width * scale) / 2;
                 const y = (size - img.height * scale) / 2;
                 ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-
                 const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
-
                 set(ref(db, `users/${auth.currentUser.uid}/photo`), compressedBase64)
                 .then(() => {
                     document.getElementById('profile-img-preview').src = compressedBase64;
@@ -495,16 +462,18 @@ window.loginWithGoogle = () => {
 
     function renderLeague(ev) {
         let stats = ev.players.map(p => ({ name: p, sp: 0, diff: 0, pkt: 0 }));
-        ev.days.forEach(day => {
-            day.matches.forEach(m => {
-                const s1 = parseInt(m.s1), s2 = parseInt(m.s2);
-                if(!isNaN(s1) && !isNaN(s2)) {
-                    let p1 = stats.find(s => s.name === m.p1), p2 = stats.find(s => s.name === m.p2);
-                    p1.sp++; p2.sp++; p1.diff += (s1-s2); p2.diff += (s2-s1);
-                    if(s1>s2) p1.pkt+=2; else if(s2>s1) p2.pkt+=2; else {p1.pkt++; p2.pkt++;}
-                }
+        if(ev.days) {
+            ev.days.forEach(day => {
+                day.matches.forEach(m => {
+                    const s1 = parseInt(m.s1), s2 = parseInt(m.s2);
+                    if(!isNaN(s1) && !isNaN(s2)) {
+                        let p1 = stats.find(s => s.name === m.p1), p2 = stats.find(s => s.name === m.p2);
+                        p1.sp++; p2.sp++; p1.diff += (s1-s2); p2.diff += (s2-s1);
+                        if(s1>s2) p1.pkt+=2; else if(s2>s1) p2.pkt+=2; else {p1.pkt++; p2.pkt++;}
+                    }
+                });
             });
-        });
+        }
         stats.sort((a,b) => b.pkt - a.pkt || b.diff - a.diff);
         document.getElementById('league-table-area').innerHTML = `<div class="table-wrapper"><table><thead><tr><th>#</th><th style="text-align:left">Spieler</th><th>SP.</th><th>+/-</th><th>PKT.</th></tr></thead><tbody>${stats.map((s,i) => `<tr><td class="rank-cell ${i<4?'qualify':''}">${i+1}</td><td style="text-align:left; font-weight:bold;">${s.name}</td><td>${s.sp}</td><td>${s.diff}</td><td><strong>${s.pkt}</strong></td></tr>`).join('')}</tbody></table></div>`;
         
@@ -519,9 +488,11 @@ window.loginWithGoogle = () => {
             document.getElementById('records-body').innerHTML = recHTML;
         }
         let h = "";
-        ev.days.forEach((day, dIdx) => {
-            h += `<div class="day-section"><div class="day-header" onclick="toggleDay(${dIdx})"><strong>${day.round}</strong><div><span id="arrow-${dIdx}">▼</span><span class="lock-icon" onclick="handleLock(event, ${dIdx}, ${day.locked})">${day.locked ? '🔒' : '🔓'}</span></div></div><div id="day-content-${dIdx}" class="day-content">${day.matches.map((m, mIdx) => `<div class="match-row"><div>${m.p1}</div><div class="score-box"><input type="number" value="${m.s1}" ${day.locked?'disabled':''} onchange="updateScore(${dIdx}, ${mIdx}, 's1', this.value)">:<input type="number" value="${m.s2}" ${day.locked?'disabled':''} onchange="updateScore(${dIdx}, ${mIdx}, 's2', this.value)"></div><div>${m.p2}</div></div>`).join('')}</div></div>`;
-        });
+        if(ev.days) {
+            ev.days.forEach((day, dIdx) => {
+                h += `<div class="day-section"><div class="day-header" onclick="toggleDay(${dIdx})"><strong>${day.round}</strong><div><span id="arrow-${dIdx}">▼</span><span class="lock-icon" onclick="handleLock(event, ${dIdx}, ${day.locked})">${day.locked ? '🔒' : '🔓'}</span></div></div><div id="day-content-${dIdx}" class="day-content">${day.matches.map((m, mIdx) => `<div class="match-row"><div>${m.p1}</div><div class="score-box"><input type="number" value="${m.s1}" ${day.locked?'disabled':''} onchange="updateScore(${dIdx}, ${mIdx}, 's1', this.value)">:<input type="number" value="${m.s2}" ${day.locked?'disabled':''} onchange="updateScore(${dIdx}, ${mIdx}, 's2', this.value)"></div><div>${m.p2}</div></div>`).join('')}</div></div>`;
+            });
+        }
         document.getElementById('schedule-content').innerHTML = h;
         if(!ev.finals || !ev.finals.unlocked) {
             document.getElementById('schedule-content').innerHTML += `<button class="primary" onclick="unlockLeagueFinals('${stats[0].name}','${stats[1].name}','${stats[2].name}','${stats[3].name}')">🏆 FINALTURNIER STARTEN</button>`;
@@ -538,6 +509,7 @@ window.loginWithGoogle = () => {
     window.handleLock = (e, dIdx, isLocked) => { e.stopPropagation(); if(!isLocked) update(ref(db, `all_events/${currentId}/days/${dIdx}`), { locked: true }); else if(prompt("PIN:") === PW) update(ref(db, `all_events/${currentId}/days/${dIdx}`), { locked: false }); };
     window.toggleDay = (idx) => { 
         const el = document.getElementById(`day-content-${idx}`); 
+        if(!el) return;
         const isActive = el.classList.toggle('active'); 
         document.getElementById(`arrow-${idx}`).textContent = isActive ? '▲' : '▼'; 
     };
