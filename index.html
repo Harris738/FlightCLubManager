@@ -11,6 +11,7 @@
             --gold: #d4af37; --bright-gold: #f1c40f; --dark-bg: #0d0d0d;
             --card-bg: rgba(25, 25, 25, 0.95); --btn-grad: linear-gradient(135deg, #d4af37 0%, #f1c40f 100%);
             --qualify-green: #27ae60; --danger: #e74c3c;
+            --google-blue: #4285F4;
         }
         body { 
             font-family: 'Segoe UI', sans-serif; background-color: var(--dark-bg); color: #efefef; padding: 15px; margin: 0; 
@@ -42,6 +43,7 @@
         .tournament-item { display: flex; justify-content: space-between; align-items: center; padding: 18px; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 15px; margin-bottom: 12px; background: rgba(255,255,255,0.02); transition: 0.3s; }
         
         button.primary { background: var(--btn-grad); color: #000; font-weight: 900; border: none; cursor: pointer; padding: 16px; border-radius: 12px; width: 100%; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
+        .btn-google { background: white; color: #444; font-weight: bold; border: 1px solid #ddd; cursor: pointer; padding: 12px; border-radius: 12px; width: 100%; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-delete { background: none; border: 1px solid #333; color: #555; border-radius: 8px; cursor: pointer; font-weight: bold; white-space: nowrap; }
         .btn-profile { background: rgba(255,255,255,0.1); border: 1px solid var(--gold); color: var(--gold); border-radius: 8px; cursor: pointer; font-weight: bold; white-space: nowrap; }
 
@@ -98,6 +100,11 @@
             
             <div id="login-actions">
                 <button class="primary" onclick="handleAuth('login')">LOGIN</button>
+                
+                <button class="btn-google" onclick="handleGoogleLogin()">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/layout/google.svg" width="18"> Mit Google anmelden
+                </button>
+
                 <p class="info-text">
                     <span class="auth-link" onclick="forgotPassword()">Passwort vergessen?</span><br><br>
                     Noch kein Konto? <span class="auth-link" onclick="toggleAuthMode(true)">Hier registrieren</span>
@@ -210,7 +217,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, push, onValue, update, remove, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, sendPasswordResetEmail, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, sendPasswordResetEmail, updateEmail, updatePassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBz_CsnVtihY_wuAgzxRHK4Y8D57DQAd2M",
@@ -225,6 +232,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const auth = getAuth(app);
+    const googleProvider = new GoogleAuthProvider();
     
     let currentId = null;
     let currentUser = null;
@@ -255,6 +263,22 @@
         }
     };
 
+    window.handleGoogleLogin = () => {
+        signInWithPopup(auth, googleProvider)
+            .then((result) => {
+                const user = result.user;
+                // Falls der User neu ist oder kein Foto in der DB hat, Google Foto übernehmen
+                get(ref(db, `users/${user.uid}/photo`)).then(snap => {
+                    if(!snap.exists() && user.photoURL) {
+                        set(ref(db, `users/${user.uid}/photo`), user.photoURL);
+                    }
+                });
+            })
+            .catch((error) => {
+                document.getElementById('auth-error').innerText = "Google Login abgebrochen.";
+            });
+    };
+
     window.forgotPassword = () => {
         const email = document.getElementById('auth-email').value;
         if(!email) return alert("Bitte E-Mail Adresse eingeben.");
@@ -277,7 +301,7 @@
             
             get(ref(db, `users/${user.uid}/photo`)).then(snap => {
                 const photoData = snap.val();
-                const displayImg = photoData ? photoData : "https://via.placeholder.com/100";
+                const displayImg = photoData ? photoData : (user.photoURL ? user.photoURL : "https://via.placeholder.com/100");
                 document.getElementById('profile-img-preview').src = displayImg;
                 document.getElementById('dash-img').src = displayImg;
             });
