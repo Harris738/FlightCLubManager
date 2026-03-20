@@ -1,0 +1,80 @@
+:root {
+            --gold: #d4af37; --bright-gold: #f1c40f; --dark-bg: #0d0d0d;
+            --card-bg: rgba(25, 25, 25, 0.95); --btn-grad: linear-gradient(135deg, #d4af37 0%, #f1c40f 100%);
+            --qualify-green: #27ae60; --danger: #e74c3c;
+            --google-blue: #4285F4;
+        }
+        body { 
+            font-family: 'Segoe UI', sans-serif; background-color: var(--dark-bg); color: #efefef; padding: 15px; margin: 0; 
+            background-image: radial-gradient(#222 1px, transparent 0); background-size: 20px 20px;
+        }
+        .container { max-width: 900px; margin: auto; background: var(--card-bg); padding: 25px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+        
+        h1 { text-align: center; white-space: nowrap; margin-bottom: 30px; }
+        h1 .fc-gold { background: linear-gradient(to bottom, #fff, var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h1 .mg-white { color: #ffffff; }
+        h2 span { background: linear-gradient(to bottom, #fff, var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; gap: 10px; }
+        .header-controls { display: flex; align-items: center; gap: 8px; }
+
+        @media (max-width: 480px) { 
+            h1 { font-size: 1.2rem; } 
+            .container { padding: 15px; }
+            .btn-profile, .btn-delete { padding: 6px 8px; font-size: 0.65rem; }
+            .dash-profile-img { width: 28px; height: 28px; }
+        }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(212, 175, 55, 0.1); padding: 15px; border-radius: 15px; text-align: center; }
+        .stat-label { font-size: 0.65rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; }
+        .stat-value { font-size: 1.6rem; font-weight: 900; color: #fff; }
+
+        .section-title { font-size: 0.75rem; color: #555; border-bottom: 1px solid #222; padding-bottom: 8px; margin-bottom: 15px; letter-spacing: 2px; text-transform: uppercase; }
+        .tournament-item { display: flex; justify-content: space-between; align-items: center; padding: 18px; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 15px; margin-bottom: 12px; background: rgba(255,255,255,0.02); transition: 0.3s; }
+        
+        button.primary { background: var(--btn-grad); color: #000; font-weight: 900; border: none; cursor: pointer; padding: 16px; border-radius: 12px; width: 100%; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
+        .btn-google { background: white; color: #444; font-weight: bold; border: 1px solid #ddd; cursor: pointer; padding: 12px; border-radius: 12px; width: 100%; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-google img {width: 20px; height: 20px; object-fit: contain; display: block; position: relative; z-index: 10; }
+        .btn-delete { background: none; border: 1px solid #333; color: #555; border-radius: 8px; cursor: pointer; font-weight: bold; white-space: nowrap; }
+        .btn-profile { background: rgba(255,255,255,0.1); border: 1px solid var(--gold); color: var(--gold); border-radius: 8px; cursor: pointer; font-weight: bold; white-space: nowrap; }
+
+        .table-wrapper { width: 100%; overflow-x: auto; border-radius: 12px; background: rgba(0,0,0,0.4); border: 1px solid #333; margin-bottom: 25px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: rgba(212, 175, 55, 0.1); color: var(--gold); padding: 15px; font-size: 0.7rem; border-bottom: 1px solid #333; text-transform: uppercase; }
+        td { padding: 15px; border-bottom: 1px solid #1a1a1a; text-align: center; }
+        .rank-cell.qualify { border-left: 4px solid var(--qualify-green); background: rgba(39, 174, 96, 0.1); font-weight: bold; }
+
+        .rec-btn { background: var(--btn-grad); color: #000; border: none; border-radius: 4px; padding: 4px 8px; font-weight: bold; font-size: 0.7rem; cursor: pointer; margin-bottom: 4px; display: block; width: 100%; }
+        .rec-num { background: #000; color: var(--bright-gold); border-radius: 4px; padding: 2px 6px; font-size: 0.9rem; font-weight: 900; cursor: pointer; border: 1px solid #333; }
+
+        .day-section { background: rgba(255,255,255,0.03); border: 1px solid #333; border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+        .day-header { padding: 15px; background: rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .day-content { display: none; padding: 10px; }
+        .day-content.active { display: block; }
+
+        .match-row, .final-match { 
+            padding: 12px 5px; display: grid; grid-template-columns: 1fr 110px 1fr; align-items: center; border-bottom: 1px solid #222; gap: 10px; 
+        }
+        .match-row > div:first-child, .final-match > div:first-child { text-align: right; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .match-row > div:last-child, .final-match > div:last-child { text-align: left; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .score-box { display: flex; justify-content: center; align-items: center; gap: 4px; width: 110px; margin: 0 auto; }
+        .score-box input { width: 42px; height: 38px; text-align: center; font-size: 1.1rem; font-weight: bold; color: var(--bright-gold); background: #000; border: 1px solid #444; border-radius: 8px; padding: 0; box-sizing: border-box; }
+        
+        .view { display: none; } .view.active { display: block; }
+        .back-btn { background: none; color: var(--gold); border: 1px solid var(--gold); padding: 8px 15px; cursor: pointer; border-radius: 8px; margin-bottom: 15px; }
+        
+        select, input[type="text"], input[type="password"], textarea { width:100%; padding:12px; background:#111; color:white; border:1px solid #444; border-radius:8px; margin-bottom:3px; box-sizing:border-box; }
+        .auth-link { color: var(--gold); text-decoration: none; font-weight: bold; cursor: pointer; }
+        .info-text { font-size: 0.8rem; color: #888; text-align: center; margin-top: 10px; }
+        
+        .profile-pic-container { position: relative; display: inline-block; margin-bottom: 20px; }
+        .profile-pic { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; background: #222; display: block; }
+        .profile-upload-label { position: absolute; bottom: 0; right: 0; background: var(--gold); color: #000; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; border: 2px solid #000; }
+        .dash-profile-img { width: 35px; height: 35px; border-radius: 50%; border: 1.5px solid var(--gold); object-fit: cover; background: #222; }
+        /* Container für die Passwort-Zeile */
+        .pw-group {margin-top: 5px;}
+        /* Der neue "Passwort vergessen" Link oben rechts */
+        .pw-group .auth-link {color: var(--gold);text-decoration: none;font-weight: 500; letter-spacing: 0.5px;cursor: pointer;transition: all 0.2s ease;}
+        .pw-group .auth-link:hover {color: var(--bright-gold);text-decoration: underline;}

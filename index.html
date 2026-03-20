@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FlightClub Pro Manager</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
+</head>
+<body>
+
+    <div class="container">
+
+    <div id="view-login" class="view active">
+        <h1><span class="fc-gold">FLIGHTCLUB</span> <span class="mg-white">PRO</span></h1>
+        <div style="background:rgba(255,255,255,0.05); padding:25px; border-radius:20px; border: 1px solid rgba(212, 175, 55, 0.2); max-width: 400px; margin: auto;">
+            <h2 id="auth-title" style="font-size: 1.2rem; margin-bottom: 25px; text-align: left;;">Bei FLIGHTCLUB anmelden</h2>
+
+            <div id="username-wrapper" style="display: none;">
+    <input type="text" id="auth-username" placeholder="Dein Benutzername">
+    </div>
+
+    <input type="text" id="auth-email" placeholder="E-Mail Adresse">
+
+    <div class="pw-group" style="margin-bottom: 15px;">
+      <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 5px; padding: 0 5px;">
+         <span class="auth-link" onclick="forgotPassword()" style="font-size: 0.7rem; opacity: 0.8;">Passwort vergessen?</span>
+    </div>
+    <input type="password" id="auth-pass" placeholder="Passwort" style="margin-bottom: 0;">
+</div>
+
+<div id="login-actions">
+    <button class="primary" onclick="handleAuth('login')">LOGIN</button>
+    
+    <button class="btn-google" onclick="handleGoogleLogin()">
+        <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" width="18"> Mit Google anmelden
+    </button>
+    </div>
+
+                <p class="info-text">
+                    Noch kein Konto? <span class="auth-link" onclick="toggleAuthMode(true)">Hier registrieren</span>
+                </p>
+            </div>
+
+            <div id="register-actions" style="display: none;">
+                <button class="primary" onclick="handleAuth('register')">JETZT REGISTRIEREN</button>
+                <p class="info-text">
+                    Bereits registriert? <span class="auth-link" onclick="toggleAuthMode(false)">Zum Login</span>
+                </p>
+            </div>
+
+            <p id="auth-error" style="color:var(--danger); text-align:center; font-size:0.8rem; margin-top:15px; min-height: 1em;"></p>
+        </div>
+    </div>
+
+    <div id="view-dashboard" class="view">
+        <div class="header-nav">
+            <h1 style="margin:0; font-size: 1rem; text-align: left;"><span class="fc-gold">FLIGHTCLUB</span> <span class="mg-white">PRO</span></h1>
+            <div class="header-controls">
+                <img id="dash-img" class="dash-profile-img" src="https://via.placeholder.com/50" onclick="showView('view-profile')" style="cursor: pointer;">
+                <button class="btn-profile" onclick="showView('view-profile')">PROFIL</button>
+                <button class="btn-delete" onclick="handleLogout()">LOGOUT</button>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Events Gesamt</div>
+                <div id="stat-total-events" class="stat-value">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">User</div>
+                <div id="stat-active-user" class="stat-value" style="color: var(--qualify-green); font-size: 1rem;">-</div>
+            </div>
+        </div>
+        <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.1); margin-bottom: 35px;">
+            <button class="primary" onclick="showView('view-creator')">+ NEUES EVENT STARTEN</button>
+        </div>
+        <div class="section-title">Deine Events</div>
+        <div id="tournament-list"></div>
+    </div>
+
+    <div id="view-profile" class="view">
+        <button class="back-btn" onclick="showView('view-dashboard')">← ZURÜCK</button>
+        <h2>👤 <span>Profil Einstellungen</span></h2>
+        
+        <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; border: 1px solid #333; text-align: center;">
+            <div class="profile-pic-container">
+                <img id="profile-img-preview" class="profile-pic" src="https://via.placeholder.com/100">
+                <label for="profile-upload" class="profile-upload-label">+</label>
+                <input type="file" id="profile-upload" accept="image/*" style="display: none;" onchange="handleImageUpload(this)">
+            </div>
+            <p id="upload-status" style="font-size: 0.7rem; color: var(--gold); margin-bottom: 20px;">Bild zum Ändern antippen</p>
+
+            <label style="font-size: 0.7rem; color: var(--gold); display: block; margin-bottom: 5px; text-align: left;">E-MAIL ADRESSE ÄNDERN</label>
+            <input type="text" id="profile-email" placeholder="Neue E-Mail">
+            <button class="primary" style="margin-bottom: 25px; padding: 10px;" onclick="updateUserEmail()">E-MAIL AKTUALISIEREN</button>
+
+            <label style="font-size: 0.7rem; color: var(--gold); display: block; margin-bottom: 5px; text-align: left;">PASSWORT ÄNDERN</label>
+            <input type="password" id="profile-pass" placeholder="Neues Passwort">
+            <button class="primary" style="padding: 10px;" onclick="updateUserPassword()">PASSWORT AKTUALISIEREN</button>
+            <p id="profile-msg" style="text-align:center; font-size:0.8rem; margin-top:15px;"></p>
+        </div>
+    </div>
+
+    <div id="view-creator" class="view">
+        <button class="back-btn" onclick="showView('view-dashboard')">← ZURÜCK</button>
+        <h2>🏆 <span>Event Setup</span></h2>
+        <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; border: 1px solid #333;">
+            <input type="text" id="event-name" placeholder="Name des Turniers">
+            <select id="event-mode" onchange="toggleGroupOptions()">
+                <option value="league">Ligaphase (12 Spieltage + Finale)</option>
+                <option value="knockout">K.O. System</option>
+                <option value="groups">Gruppe + K.O</option>
+            </select>
+            <div id="group-options" style="display:none;">
+                <select id="group-rounds">
+                    <option value="1">Hinrunde</option>
+                    <option value="2">Hin- und Rückrunde</option>
+                </select>
+            </div>
+            <textarea id="event-players" placeholder="Spieler Namen (mit Komma getrennt)"></textarea>
+            <button class="primary" onclick="generateEvent()">TURNIER JETZT STARTEN</button>
+        </div>
+    </div>
+
+    <div id="view-event" class="view">
+        <button class="back-btn" onclick="showView('view-dashboard')">← DASHBOARD</button>
+        <h1 id="active-event-title" style="text-align: center;"><span>EVENT</span></h1>
+        <div id="league-container">
+            <div id="league-table-area"></div>
+            <div id="records-area" style="display:none;">
+                <div class="section-title">⭐ Bestleistungen (Tippen: +1 | Zahl: -1)</div>
+                <div class="table-wrapper">
+                    <table id="records-table">
+                        <thead><tr><th style="text-align:left">Spieler</th><th>180er</th><th>HF</th><th>SL</th></tr></thead>
+                        <tbody id="records-body"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="schedule-content"></div>
+            <div id="final-area"></div>
+        </div>
+        <div id="ko-container" style="display:none; margin-top:20px;"></div>
+    </div>
+</div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
