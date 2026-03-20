@@ -1,4 +1,4 @@
-:root {
+ :root {
             --gold: #d4af37; --bright-gold: #f1c40f; --dark-bg: #0d0d0d;
             --card-bg: rgba(25, 25, 25, 0.95); --btn-grad: linear-gradient(135deg, #d4af37 0%, #f1c40f 100%);
             --qualify-green: #27ae60; --danger: #e74c3c;
@@ -65,7 +65,7 @@
         .view { display: none; } .view.active { display: block; }
         .back-btn { background: none; color: var(--gold); border: 1px solid var(--gold); padding: 8px 15px; cursor: pointer; border-radius: 8px; margin-bottom: 15px; }
         
-        select, input[type="text"], input[type="password"], textarea { width:100%; padding:12px; background:#111; color:white; border:1px solid #444; border-radius:8px; margin-bottom:15px; box-sizing:border-box; }
+        select, input[type="text"], input[type="password"], textarea { width:100%; padding:12px; background:#111; color:white; border:1px solid #444; border-radius:8px; margin-bottom:3px; box-sizing:border-box; }
         .auth-link { color: var(--gold); text-decoration: none; font-weight: bold; cursor: pointer; }
         .info-text { font-size: 0.8rem; color: #888; text-align: center; margin-top: 10px; }
         
