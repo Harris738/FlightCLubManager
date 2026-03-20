@@ -10,53 +10,53 @@
 </head>
 <body>
 
-    <div class="container">
+<div class="container">
 
     <div id="view-login" class="view active">
-        <h1><span class="fc-gold">FLIGHTCLUB</span> <span class="mg-white">PRO</span></h1>
-        <div style="background:rgba(255,255,255,0.05); padding:25px; border-radius:20px; border: 1px solid rgba(212, 175, 55, 0.2); max-width: 400px; margin: auto;">
-            <h2 id="auth-title" style="font-size: 1.2rem; margin-bottom: 25px; text-align: left;;">Bei FLIGHTCLUB anmelden</h2>
-
-            <div id="username-wrapper" style="display: none;">
-    <input type="text" id="auth-username" placeholder="Dein Benutzername">
-    </div>
-
-    <input type="text" id="auth-email" placeholder="E-Mail Adresse">
-
-    <div class="pw-group" style="margin-bottom: 15px;">
-      <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 5px; padding: 0 5px;">
-         <span class="auth-link" onclick="forgotPassword()" style="font-size: 0.7rem; opacity: 0.8;">Passwort vergessen?</span>
-    </div>
-    <input type="password" id="auth-pass" placeholder="Passwort" style="margin-bottom: 0;">
-</div>
-
-<div id="login-actions">
-    <button class="primary" onclick="handleAuth('login')">LOGIN</button>
+    <h1><span class="fc-gold">FLIGHTCLUB</span> <span class="mg-white">PRO</span></h1>
     
-    <button class="btn-google" onclick="handleGoogleLogin()">
-        <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" width="18"> Mit Google anmelden
-    </button>
-    </div>
+    <div style="background:rgba(255,255,255,0.05); padding:25px; border-radius:20px; border: 1px solid rgba(212, 175, 55, 0.2); max-width: 400px; margin: auto; backdrop-filter: blur(10px);">
+        
+        <h2 id="auth-title" style="font-size: 1.2rem; margin-bottom: 25px; text-align: left;">Bei FLIGHTCLUB anmelden</h2>
 
-                <p class="info-text">
-                    Noch kein Konto? <span class="auth-link" onclick="toggleAuthMode(true)">Hier registrieren</span>
-                </p>
-            </div>
-
-            <div id="register-actions" style="display: none;">
-                <button class="primary" onclick="handleAuth('register')">JETZT REGISTRIEREN</button>
-                <p class="info-text">
-                    Bereits registriert? <span class="auth-link" onclick="toggleAuthMode(false)">Zum Login</span>
-                </p>
-            </div>
-
-            <p id="auth-error" style="color:var(--danger); text-align:center; font-size:0.8rem; margin-top:15px; min-height: 1em;"></p>
+        <div id="username-wrapper" style="display: none;">
+            <input type="text" id="auth-username" placeholder="Dein Benutzername">
         </div>
-    </div>
+
+        <input type="text" id="auth-email" placeholder="E-Mail Adresse">
+
+        <div class="pw-group" style="margin-bottom: 15px;">
+            <div id="forgot-pw-wrapper" style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 5px; padding: 0 5px;">
+                <span class="auth-link" onclick="forgotPassword()" style="font-size: 0.7rem; opacity: 0.8;">Passwort vergessen?</span>
+            </div>
+            <input type="password" id="auth-pass" placeholder="Passwort" style="margin-bottom: 0;">
+        </div>
+
+        <div id="login-actions">
+            <button class="primary" onclick="handleAuth('login')">LOGIN</button>
+            <button class="btn-google" onclick="handleGoogleLogin()">
+                <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" width="18"> Mit Google anmelden
+            </button>
+            <p class="info-text">
+                Noch kein Konto? <span class="auth-link" onclick="toggleAuthMode(true)">Hier registrieren</span>
+            </p>
+        </div>
+
+        <div id="register-actions" style="display: none;">
+            <button class="primary" onclick="handleAuth('register')">JETZT REGISTRIEREN</button>
+            <p class="info-text">
+                Bereits registriert? <span class="auth-link" onclick="toggleAuthMode(false)">Zum Login</span>
+            </p>
+        </div>
+
+        <p id="auth-error" style="color:var(--danger); text-align:center; font-size:0.8rem; margin-top:15px; min-height: 1em;"></p>
+
+    </div> </div>
 
     <div id="view-dashboard" class="view">
         <div class="header-nav">
-            <h1 style="margin:0; font-size: 1rem; text-align: left;"><span class="fc-gold">FLIGHTCLUB</span> <span class="mg-white">PRO</span></h1>
+            <h1 style="margin:0; font-size: 1rem; background: none; border: none; box-shadow: none;">
+    <span class="fc-gold">FLIGHTCLUB</span> <span class="mg-white">PRO</span></h1>
             <div class="header-controls">
                 <img id="dash-img" class="dash-profile-img" src="https://via.placeholder.com/50" onclick="showView('view-profile')" style="cursor: pointer;">
                 <button class="btn-profile" onclick="showView('view-profile')">PROFIL</button>
