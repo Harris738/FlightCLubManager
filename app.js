@@ -26,8 +26,10 @@
         document.getElementById('username-wrapper').style.display = isRegistering ? 'block' : 'none';
         document.getElementById('login-actions').style.display = isRegistering ? 'none' : 'block';
         document.getElementById('register-actions').style.display = isRegistering ? 'block' : 'none';
-        document.getElementById('auth-title').innerText = isRegistering ? "Neuen Account erstellen" : "Anmelden";
+        document.getElementById('auth-title').innerText = isRegistering ? "Neuen Account erstellen" : "Bei FLIGHTCLUB anmelden";
         document.getElementById('auth-error').innerText = "";
+        const forgotPw = document.getElementById('forgot-pw-wrapper');
+        if(forgotPw) {forgotPw.style.display = isRegistering ? 'none' : 'flex';}
     };
 
     window.handleAuth = (mode) => {
