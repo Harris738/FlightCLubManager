@@ -1,0 +1,560 @@
+/* ============================================================
+   VIEWS - Login, Dashboard & Event-Manager
+   ============================================================ */
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
+#view-login > div:first-of-type {
+  background: var(--card-bg);
+  padding: 25px;
+  border-radius: 20px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  max-width: 400px;
+  margin: auto;
+}
+
+/* --- DASHBOARD VIEW --- */
+
+#view-dashboard {
+  display: none;
+  flex-direction: column;
+  height: 100vh; /* Fest auf die volle verfügbare Bildschirmhöhe */
+  justify-content: flex-start;
+  overflow: hidden; /* Verhindert jegliches Scrollen der Seite */
+  position: fixed; /* Fixiert die Ansicht gegen Handy-Browser-Scrollen */
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+#view-dashboard.view.active {
+  display: flex !important;
+}
+
+/* Haupt-Container für das Dashboard */
+.dashboard-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* ÄNDERUNG: Oben ausrichten statt Zentrieren */
+  justify-content: flex-start;
+  /* ÄNDERUNG: Weniger Abstand zum Header (70px statt 75px/110px) */
+  padding: 70px 20px 20px;
+  /* ÄNDERUNG: Dynamischer Abstand, der sich der Höhe anpasst */
+  gap: 2.5vh;
+  max-width: 600px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* --- PLAYER HERO CARD --- */
+.dashboard-hero-card {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  padding: 25px 30px; /* Vertikal leicht gekürzt für mehr Platz */
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 25px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  backdrop-filter: blur(10px);
+  margin-bottom: 0; /* Margin entfernt, da Gap vom Container gesteuert wird */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  flex-shrink: 0; /* Verhindert das Quetschen auf Handys */
+}
+
+.hero-profile-pic {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid var(--gold);
+  object-fit: cover;
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  background-color: #1a1a1a;
+}
+
+.profile-glow-ring {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 115px;
+  height: 115px;
+  background: var(--gold);
+  border-radius: 50%;
+  opacity: 0.2;
+  filter: blur(15px);
+  animation: pulseGold 3s infinite;
+}
+
+@keyframes pulseGold {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 0.4;
+  }
+}
+
+.welcome-label {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  color: var(--gold);
+  opacity: 0.7;
+}
+
+#dash-username {
+  font-size: 1.6rem;
+  margin: 5px 0;
+  text-transform: uppercase;
+}
+
+.hero-badges {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.badge {
+  font-size: 0.55rem;
+  padding: 3px 8px;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.gold-badge {
+  background: var(--btn-grad);
+  color: #000;
+  border: none;
+  font-weight: 900;
+}
+
+/* --- STATS BANNER --- */
+.stats-banner {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 0; /* Margin entfernt */
+  flex-shrink: 0;
+}
+
+.stat-box {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 15px 5px;
+  border-radius: 18px;
+  text-align: center;
+  border-bottom: 2px solid rgba(212, 175, 55, 0.4);
+}
+
+.stat-box span {
+  display: block;
+  font-size: 0.6rem;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.stat-box strong {
+  font-size: 1.1rem;
+  color: #fff;
+  font-weight: 900;
+}
+
+/* --- ACTION TILES --- */
+.dashboard-actions-grid {
+  display: grid;
+  gap: 12px;
+  flex-shrink: 1;
+  overflow-y: auto; /* Erlaubt Notfall-Scrollen NUR innerhalb der Buttons, falls Screen winzig ist */
+  padding-bottom: 10px;
+}
+
+.action-tile {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 18px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.action-tile:hover {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.3);
+  transform: translateY(-3px);
+}
+
+.main-tile {
+  background: linear-gradient(
+    145deg,
+    rgba(212, 175, 55, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
+  border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+.tile-icon {
+  font-size: 1.8rem;
+}
+
+.tile-content h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--gold);
+}
+
+.tile-content p {
+  margin: 2px 0 0;
+  font-size: 0.7rem;
+  opacity: 0.5;
+}
+
+.tile-arrow {
+  margin-left: auto;
+  color: var(--gold);
+  font-weight: bold;
+}
+
+.action-tile.disabled {
+  opacity: 0.3;
+  cursor: default;
+  filter: grayscale(1);
+}
+
+/* Responsive Fix für Handys */
+@media (max-width: 480px), (max-height: 750px) {
+  .dashboard-container {
+    padding: 65px 15px 15px;
+    gap: 10px;
+  }
+  .dashboard-hero-card {
+    padding: 15px;
+    gap: 15px;
+  }
+  .hero-profile-pic,
+  .profile-glow-ring {
+    width: 75px;
+    height: 75px;
+  }
+  .pulse-ring {
+    width: 85px;
+    height: 85px;
+  }
+  #dash-username {
+    font-size: 1.25rem;
+  }
+  .action-tile {
+    padding: 12px 15px;
+  }
+}
+
+/* --- EVENT MANAGER / CREATOR --- */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  padding: 15px;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 5px;
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fff;
+}
+
+.section-title {
+  font-size: 0.75rem;
+  color: #555;
+  border-bottom: 1px solid #222;
+  padding-bottom: 8px;
+  margin-bottom: 15px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.tournament-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.02);
+
+  /* NEU: Vorbereitung für die Animation */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: pointer;
+}
+
+/* Der Effekt beim Drüberfahren (PC) */
+@media (min-width: 1025px) {
+  .tournament-item:hover {
+    transform: translateY(-4px); /* Schwebt nach oben */
+    background: rgba(255, 255, 255, 0.05); /* Wird dezent heller */
+    border-color: rgba(212, 175, 55, 0.3); /* Goldener Rand leuchtet auf */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); /* Tieferer Schatten */
+  }
+
+  /* Klick-Effekt: Karte drückt sich kurz ein */
+  .tournament-item:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* --- LIGA & EVENT DETAILS --- */
+
+.rank-cell.qualify {
+  border-left: 4px solid var(--qualify-green);
+  background: rgba(39, 174, 96, 0.1);
+  font-weight: bold;
+}
+.day-section {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #333;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.day-header {
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+
+  /* NEU: Vorbereitung für die Animation */
+  transition: all 0.2s ease;
+}
+
+@media (min-width: 1025px) {
+  .day-header:hover {
+    background: rgba(255, 255, 255, 0.1); /* Header wird heller */
+    padding-left: 20px; /* Kleiner cooler Effekt: Text rückt minimal ein */
+    color: var(--bright-gold); /* Schrift wird leuchtend Gold */
+  }
+
+  .day-header:active {
+    background: rgba(
+      212,
+      175,
+      55,
+      0.1
+    ); /* Kurzes goldenes Aufblitzen beim Klick */
+  }
+}
+
+.day-content {
+  display: none;
+  padding: 10px;
+}
+
+.day-content.active {
+  display: block;
+}
+
+/* --- FINALTURNIER DESIGN --- */
+
+.finals-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.finals-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #444;
+}
+
+.finals-title {
+  color: #ffd700;
+  font-size: 1.6rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.finals-main-section {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.final-match-card {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid #333;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  margin-bottom: 20px;
+}
+
+/* WICHTIG: Hier wechseln wir von Flex auf Grid, damit es wie die Spieltage aussieht */
+.final-match-card .match-row {
+  display: grid !important;
+  /* Gleiche Spalten wie bei den Spieltagen: flex | fest | flex */
+  grid-template-columns: 1fr 150px 1fr !important;
+  align-items: center;
+  /* Der Abstand (Gap) steuert, wie nah die Namen an der Box sind */
+  gap: 15px;
+  width: 100%;
+}
+
+.player-name {
+  color: white;
+  font-weight: bold;
+  font-size: 1.1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0; /* Verhindert das Reingreifen in die Scorebox */
+}
+
+/* Linker Name: Rechtsbündig zur Box hin */
+.player-name:not(.right) {
+  text-align: right;
+}
+
+/* Rechter Name: Linksbündig zur Box hin */
+.player-name.right {
+  text-align: left;
+}
+
+/* Anpassung der Score-Box für den Finaltag (da deine Inputs hier 65px groß sind) */
+.final-match-card .score-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 150px; /* Etwas breiter als 110px, weil deine Final-Inputs 65px breit sind */
+  margin: 0 auto;
+}
+
+.score-box input {
+  width: 65px;
+  height: 65px;
+  background: #222;
+  border: 2px solid #ffd700;
+  border-radius: 12px;
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.score-box span {
+  color: #ffd700;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.match-info-label {
+  text-align: center;
+  margin-top: 15px;
+  color: #ffd700;
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.gold-border {
+  border: 2px solid #ffd700;
+  background: linear-gradient(145deg, #1a1a1a, #252525);
+}
+
+.danger-btn {
+  background: #cc0000;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 20px;
+}
+/* Mobile-Anpassung für den massiven Finaltag */
+@media (max-width: 480px) {
+  .final-match-card {
+    padding: 12px 10px !important; /* Weniger Rand in der Karte */
+  }
+
+  .final-match-card .match-row {
+    /* Wir verkleinern die mittlere Spalte von 150px auf 110px */
+    grid-template-columns: 1fr 110px 1fr !important;
+    gap: 8px !important;
+  }
+
+  .final-match-card .score-box {
+    width: 110px !important;
+    gap: 4px !important;
+  }
+
+  /* Die massiven Inputs kleiner machen */
+  .final-match-card .score-box input {
+    width: 45px !important; /* Von 65px auf 45px runter */
+    height: 45px !important; /* Von 65px auf 45px runter */
+    font-size: 1.3rem !important; /* Schrift anpassen */
+    border-radius: 8px !important;
+  }
+
+  .final-match-card .score-box span {
+    font-size: 1.1rem !important; /* Der Doppelpunkt : */
+  }
+
+  .player-name {
+    font-size: 0.9rem !important; /* Namen etwas kleiner, damit sie nicht sofort abbrechen */
+    line-height: 1.2;
+  }
+
+  /* Speziell für das Finale (Gold-Box) */
+  .final-match-card.gold-border .player-name {
+    font-size: 1rem !important;
+  }
+}

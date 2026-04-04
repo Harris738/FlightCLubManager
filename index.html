@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>FlightClub Pro Manager</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="apple-touch-icon" href="icon.png" />
+    <link rel="icon" type="image/png" href="icon.png" />
+  </head>
+  <body>
+    <div
+      id="app-loader"
+      style="
+        position: fixed;
+        inset: 0;
+        background: var(--dark-bg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+      "
+    >
+      <div class="flight-3d-wrapper">
+        <div class="flight-blade s1"></div>
+        <div class="flight-blade s2"></div>
+      </div>
+
+      <div class="loader-text-pro">FlightClub Pro lädt...</div>
+    </div>
+    <header class="app-header">
+      <div id="menu-toggle" class="modern-burger-btn" onclick="toggleSidebar()">
+        <div class="burger-bar"></div>
+        <div class="burger-bar"></div>
+        <div class="burger-bar"></div>
+      </div>
+      <div
+        id="header-back-btn"
+        class="exit-btn"
+        style="display: none"
+        onclick="goBack()"
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </div>
+
+      <div
+        id="abort-btn"
+        class="exit-btn"
+        onclick="resetDartGame()"
+        style="display: none"
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+      </div>
+
+      <div class="header-title" id="current-view-title">Dashboard</div>
+
+      <div class="header-right">
+        <div class="header-controls">
+          <img
+            id="header-profile-img"
+            class="dash-profile-img"
+            src="https://via.placeholder.com/50"
+            onclick="showView('view-profile')"
+            style="cursor: pointer"
+          />
+        </div>
+      </div>
+    </header>
+    <div
+      id="sidebar-overlay"
+      class="sidebar-overlay"
+      onclick="toggleSidebar()"
+    ></div>
+    <div id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <h2 style="color: var(--gold); margin: 0">MENÜ</h2>
+        <span onclick="toggleSidebar()" style="cursor: pointer; font-size: 2rem"
+          >&times;</span
+        >
+      </div>
+      <ul class="sidebar-menu">
+        <li onclick="showView('view-dashboard')">🏠 Dashboard</li>
+        <li onclick="showView('view-counter')">🎯 Dart Counter</li>
+        <li onclick="showView('view-creator')">🏆 Turnier erstellen</li>
+        <li onclick="showView('view-profile')">👤 Profil</li>
+      </ul>
+    </div>
+    <div id="view-counter" class="view">
+      <div id="counter-setup" class="setup-box">
+        <div class="setup-header">
+          <h2 class="setup-title">MATCH SETUP</h2>
+          <p class="setup-subtitle">Spieleretails</p>
+        </div>
+
+        <div class="setup-content">
+          <div id="player-chips-container" class="player-chips-grid">
+            <div
+              id="add-player-starter"
+              class="player-chip add-starter"
+              onclick="triggerAddPlayer()"
+            >
+              <div class="chip-avatar add-icon">+</div>
+              <div class="chip-name">Hinzufügen</div>
+            </div>
+          </div>
+
+          <div
+            id="player-name-prompt"
+            class="name-prompt-overlay"
+            style="display: none"
+          >
+            <div class="prompt-card">
+              <h3 id="prompt-title">Spieler hinzufügen</h3>
+              <input
+                type="text"
+                id="prompt-name-input"
+                placeholder="Name eingeben..."
+                maxlength="12"
+              />
+              <div class="prompt-actions">
+                <button class="btn-cancel" onclick="closeNamePrompt()">
+                  Abbrechen
+                </button>
+                <button
+                  type="button"
+                  id="prompt-confirm-btn"
+                  class="btn-confirm"
+                  onclick="handlePromptConfirm()"
+                >
+                  Speichern
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="input-field-group" style="margin-top: 30px">
+            <label for="start-score">SPIELMODUS</label>
+            <div class="custom-select-wrapper">
+              <select id="start-score">
+                <option value="501">501</option>
+                <option value="301">301</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="primary-gold-btn" onclick="startDartGame()">
+            SPIEL STARTEN
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="counter-arena" style="display: none">
+      <div class="arena-header"></div>
+
+      <div class="score-grid">
+        <div class="p-card active-turn" id="side-p1">
+          <div class="p-info">
+            <span class="p-name-tag" id="disp-p1-name"></span>
+          </div>
+          <div class="p-score" id="score-p1">501</div>
+          <div class="checkout-hint" id="co-p1"></div>
+          <div class="p-leg-score" id="leg-count-p1">0</div>
+          <div class="p-footer-stats" id="avg-p1">3-Dart Avg. 0.00</div>
+        </div>
+
+        <div class="p-card" id="side-p2">
+          <div class="p-info">
+            <span class="p-name-tag" id="disp-p2-name"></span>
+          </div>
+          <div class="p-score" id="score-p2">501</div>
+          <div class="checkout-hint" id="co-p2"></div>
+          <div class="p-leg-score" id="leg-count-p2">0</div>
+          <div class="p-footer-stats" id="avg-p2">3-Dart Avg. 0.00</div>
+        </div>
+
+        <div class="p-card" id="side-p3">
+          <div class="p-info">
+            <span class="p-name-tag" id="disp-p3-name"></span>
+          </div>
+          <div class="p-score" id="score-p3">501</div>
+          <div class="checkout-hint" id="co-p3"></div>
+          <div class="p-leg-score" id="leg-count-p3">0</div>
+          <div class="p-footer-stats" id="avg-p3">3-Dart Avg. 0.00</div>
+        </div>
+
+        <div class="p-card" id="side-p4">
+          <div class="p-info">
+            <span class="p-name-tag" id="disp-p4-name"></span>
+          </div>
+          <div class="p-score" id="score-p4">501</div>
+          <div class="checkout-hint" id="co-p4"></div>
+          <div class="p-leg-score" id="leg-count-p4">0</div>
+          <div class="p-footer-stats" id="avg-p4">3-Dart Avg. 0.00</div>
+        </div>
+      </div>
+
+      <div class="turn-status-bar">
+        <span id="current-player-status"></span> IST AM ZUG!
+      </div>
+
+      <div class="arena-input-section">
+        <div class="bottom-input-panel">
+          <div class="input-container-white">
+            <span
+              class="undo-btn"
+              onclick="undoLastMove()"
+              title="Letzten Wurf rückgängig machen"
+              >↩️</span
+            >
+            <input type="text" id="points-input" placeholder="..." readonly />
+            <button class="send-btn-green" onclick="submitPoints()">OK</button>
+          </div>
+        </div>
+
+        <div class="numpad-grid">
+          <button onclick="pressNum(1)">1</button>
+          <button onclick="pressNum(2)">2</button>
+          <button onclick="pressNum(3)">3</button>
+          <button onclick="pressNum(4)">4</button>
+          <button onclick="pressNum(5)">5</button>
+          <button onclick="pressNum(6)">6</button>
+          <button onclick="pressNum(7)">7</button>
+          <button onclick="pressNum(8)">8</button>
+          <button onclick="pressNum(9)">9</button>
+          <button onclick="pressNum('CLR')" class="btn-clear">C</button>
+          <button onclick="pressNum(0)">0</button>
+          <button onclick="pressNum('DEL')">⌫</button>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div id="view-login" class="view active">
+        <h1 class="login-title">
+          <span class="fc-gold">FLIGHTCLUB</span>
+          <span class="mg-white">PRO</span>
+        </h1>
+
+        <div
+          style="
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            max-width: 400px;
+            margin: auto;
+            backdrop-filter: blur(10px);
+          "
+        >
+          <h2
+            id="auth-title"
+            style="font-size: 1.2rem; margin-bottom: 25px; text-align: left"
+          >
+            Bei FLIGHTCLUB anmelden
+          </h2>
+
+          <div id="username-wrapper" style="display: none">
+            <input
+              type="text"
+              id="auth-username"
+              placeholder="Dein Benutzername"
+            />
+          </div>
+
+          <input type="text" id="auth-email" placeholder="E-Mail Adresse" />
+
+          <div class="pw-group" style="margin-bottom: 15px">
+            <div
+              id="forgot-pw-wrapper"
+              style="
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                margin-bottom: 5px;
+                padding: 0 5px;
+              "
+            >
+              <span
+                class="auth-link"
+                onclick="forgotPassword()"
+                style="font-size: 0.7rem; opacity: 0.8"
+                >Passwort vergessen?</span
+              >
+            </div>
+            <input
+              type="password"
+              id="auth-pass"
+              placeholder="Passwort"
+              style="margin-bottom: 0"
+            />
+          </div>
+
+          <div id="login-actions">
+            <button class="primary" onclick="handleAuth('login')">LOGIN</button>
+            <button class="btn-google" onclick="handleGoogleLogin()">
+              <img
+                src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
+                width="18"
+              />
+              Mit Google anmelden
+            </button>
+            <p class="info-text">
+              Noch kein Konto?
+              <span class="auth-link" onclick="toggleAuthMode(true)"
+                >Hier registrieren</span
+              >
+            </p>
+          </div>
+
+          <div id="register-actions" style="display: none">
+            <button class="primary" onclick="handleAuth('register')">
+              JETZT REGISTRIEREN
+            </button>
+            <p class="info-text">
+              Bereits registriert?
+              <span class="auth-link" onclick="toggleAuthMode(false)"
+                >Zum Login</span
+              >
+            </p>
+          </div>
+
+          <p
+            id="auth-error"
+            style="
+              color: var(--danger);
+              text-align: center;
+              font-size: 0.8rem;
+              margin-top: 15px;
+              min-height: 1em;
+            "
+          ></p>
+        </div>
+      </div>
+
+      <div id="view-dashboard" class="view">
+        <div class="dashboard-container">
+          <div class="dashboard-hero-card">
+            <div class="profile-glow-ring">
+              <img
+                id="dash-img"
+                src="https://via.placeholder.com/100"
+                class="hero-profile-pic"
+                alt="Profilbild"
+              />
+              <div class="pulse-ring"></div>
+            </div>
+
+            <div class="hero-welcome-text">
+              <span class="welcome-label">PLAYER PROFILE</span>
+              <h1 id="dash-username" class="fc-gold">LADE PROFIL...</h1>
+              <div class="hero-badges">
+                <span class="badge">PRO USER</span>
+                <span class="badge gold-badge">RANK #1</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-banner">
+            <div class="stat-box">
+              <span>AVERAGE</span>
+              <strong id="dash-avg">--</strong>
+            </div>
+            <div class="stat-box">
+              <span>HIGHEST OUT</span>
+              <strong id="dash-best">180</strong>
+            </div>
+            <div class="stat-box">
+              <span>OFFENE EVENTS</span>
+              <strong id="dash-wins">0</strong>
+            </div>
+          </div>
+
+          <div class="dashboard-actions-grid">
+            <div
+              class="action-tile main-tile"
+              onclick="showView('view-counter')"
+            >
+              <div class="tile-icon">🎯</div>
+              <div class="tile-content">
+                <h3>MATCH STARTEN</h3>
+                <p>X01 Counter & Training</p>
+              </div>
+              <div class="tile-arrow">→</div>
+            </div>
+
+            <div
+              class="action-tile"
+              onclick="alert('Statistiken folgen in Kürze!')"
+            >
+              <div class="tile-icon">📊</div>
+              <div class="tile-content">
+                <h3>STATISTIKEN</h3>
+                <p>Deine Entwicklung ansehen</p>
+              </div>
+            </div>
+
+            <div class="action-tile disabled">
+              <div class="tile-icon">🏆</div>
+              <div class="tile-content">
+                <h3>TURNIERE</h3>
+                <p>Events verwalten (Coming Soon)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="view-creator" class="view">
+        <div class="header-nav">
+          <h1 class="dashboard-title">
+            <span class="fc-gold">EVENT</span>
+            <span class="mg-white">MANAGER</span>
+          </h1>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Events Gesamt</div>
+            <div id="stat-total-events" class="stat-value">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">User</div>
+            <div
+              id="stat-active-user"
+              class="stat-value"
+              style="color: var(--qualify-green); font-size: 1rem"
+            >
+              -
+            </div>
+          </div>
+        </div>
+
+        <div
+          style="
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            margin-bottom: 35px;
+          "
+        >
+          <button class="primary" onclick="showView('view-setup')">
+            + NEUES EVENT STARTEN
+          </button>
+        </div>
+
+        <div class="section-title">Deine Events</div>
+        <div id="tournament-list"></div>
+      </div>
+
+      <div id="view-profile" class="view">
+        <h2>👤 <span>Profil Einstellungen</span></h2>
+        <div
+          style="
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #333;
+            text-align: center;
+          "
+        >
+          <div class="profile-pic-container">
+            <img
+              id="profile-img-preview"
+              class="profile-pic"
+              src="https://via.placeholder.com/100"
+            />
+            <label for="profile-upload" class="profile-upload-label">+</label>
+            <input
+              type="file"
+              id="profile-upload"
+              accept="image/*"
+              style="display: none"
+              onchange="handleImageUpload(this)"
+            />
+          </div>
+          <p
+            id="upload-status"
+            style="font-size: 0.7rem; color: var(--gold); margin-bottom: 20px"
+          >
+            Bild zum Ändern antippen
+          </p>
+
+          <label
+            style="
+              font-size: 0.7rem;
+              color: var(--gold);
+              display: block;
+              margin-bottom: 5px;
+              text-align: left;
+            "
+            >E-MAIL ADRESSE ÄNDERN</label
+          >
+          <input type="text" id="profile-email" placeholder="Neue E-Mail" />
+          <button
+            class="primary"
+            style="margin-bottom: 25px; padding: 10px"
+            onclick="updateUserEmail()"
+          >
+            E-MAIL AKTUALISIEREN
+          </button>
+
+          <label
+            style="
+              font-size: 0.7rem;
+              color: var(--gold);
+              display: block;
+              margin-bottom: 5px;
+              text-align: left;
+            "
+            >PASSWORT ÄNDERN</label
+          >
+          <input
+            type="password"
+            id="profile-pass"
+            placeholder="Neues Passwort"
+          />
+          <button
+            class="primary"
+            style="padding: 10px"
+            onclick="updateUserPassword()"
+          >
+            PASSWORT AKTUALISIEREN
+          </button>
+          <p
+            id="profile-msg"
+            style="text-align: center; font-size: 0.8rem; margin-top: 15px"
+          ></p>
+          <hr
+            style="
+              border: 0;
+              border-top: 1px solid rgba(255, 255, 255, 0.1);
+              margin: 25px 0;
+            "
+          />
+
+          <button
+            class="btn-delete"
+            onclick="handleLogout()"
+            style="
+              width: 100%;
+              padding: 12px;
+              border-color: var(--danger);
+              color: var(--danger);
+              background: rgba(231, 76, 60, 0.05);
+            "
+          >
+            ABMELDEN
+          </button>
+        </div>
+      </div>
+
+      <div id="view-setup" class="view">
+        <h2 style="margin-top: 20px">🏆 <span>Event Setup</span></h2>
+
+        <div
+          style="
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #333;
+            margin-top: 20px;
+          "
+        >
+          <input type="text" id="event-name" placeholder="Name des Turniers" />
+          <select id="event-mode" onchange="toggleGroupOptions()">
+            <option value="league">Ligaphase (12 Spieltage + Finale)</option>
+            <option value="knockout">K.O. System</option>
+            <option value="groups">Gruppe + K.O</option>
+          </select>
+
+          <div id="group-options" style="display: none">
+            <select id="group-rounds">
+              <option value="1">Hinrunde</option>
+              <option value="2">Hin- und Rückrunde</option>
+            </select>
+          </div>
+
+          <textarea
+            id="event-players"
+            placeholder="Spieler Namen (mit Komma getrennt)"
+            style="height: 100px"
+          ></textarea>
+
+          <button class="primary" onclick="generateEvent()">
+            TURNIER JETZT STARTEN
+          </button>
+        </div>
+      </div>
+
+      <div id="view-event" class="view">
+        <h1 id="active-event-title" style="text-align: center">
+          <span>EVENT</span>
+        </h1>
+        <div id="league-container">
+          <div id="league-table-area"></div>
+          <div id="records-area" style="display: none">
+            <div class="section-title">
+              ⭐ Bestleistungen (Tippen: +1 | Zahl: -1)
+            </div>
+            <div class="table-wrapper">
+              <table id="records-table">
+                <thead>
+                  <tr>
+                    <th style="text-align: left">Spieler</th>
+                    <th>180er</th>
+                    <th>HF</th>
+                    <th>SL</th>
+                  </tr>
+                </thead>
+                <tbody id="records-body"></tbody>
+              </table>
+            </div>
+          </div>
+          <div id="schedule-content"></div>
+          <div id="final-area"></div>
+        </div>
+        <div id="ko-container" style="display: none; margin-top: 20px"></div>
+      </div>
+    </div>
+
+    <div id="checkout-modal" class="modal-overlay">
+      <div class="modal-content">
+        <h3>CHECKOUT MIT DART...</h3>
+        <div class="checkout-options">
+          <button onclick="confirmCheckout(1)">1</button>
+          <button onclick="confirmCheckout(2)">2</button>
+          <button onclick="confirmCheckout(3)">3</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="Logik/config.js"></script>
+    <script type="module" src="Logik/auth.js"></script>
+    <script type="module" src="Logik/counter.js"></script>
+    <script type="module" src="Logik/event.js"></script>
+    <script type="module" src="Logik/app.js"></script>
+  </body>
+</html>

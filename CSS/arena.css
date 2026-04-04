@@ -1,0 +1,917 @@
+/* ============================================================
+   ARENA - Dart Counter, Score Grid & Numpad
+   ============================================================ */
+#counter-arena {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Fest auf die volle verfügbare Bildschirmhöhe */
+  /* Erhöht auf 80px, damit es sauber UNTER dem Header (60px) startet */
+  padding: 80px 5px 5px 5px;
+  box-sizing: border-box;
+  justify-content: flex-start;
+  gap: 5px; /* Lücke zwischen Grid und Numpad verkleinert */
+  overflow: hidden; /* Verhindert jegliches Scrollen der Seite */
+  position: fixed; /* Fixiert die Ansicht gegen Handy-Browser-Scrollen */
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* 2. Die Score-Grid-Logik: Flexibel innerhalb des verfügbaren Raums */
+.score-grid {
+  display: grid;
+  gap: 4px; /* Kompakterer Abstand zwischen den Karten */
+  width: 100%;
+  padding: 2px;
+  box-sizing: border-box;
+  transition: all 0.3s ease-in-out;
+  flex: 1; /* Nimmt den gesamten Platz zwischen Header und Numpad ein */
+  min-height: 0; /* Erlaubt dem Grid, kleiner als sein Inhalt zu werden */
+}
+
+/* LAYOUT FÜR 1 ODER 2 SPIELER (Dein stabiles Design) */
+.score-grid:not([data-players="3"]):not([data-players="4"]) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.score-grid:not([data-players="3"]):not([data-players="4"]) .p-card {
+  flex: 1 1 calc(50% - 5px);
+  max-width: calc(50% - 5px);
+}
+
+.score-grid:not([data-players="3"]):not([data-players="4"]) .p-card:only-child,
+.score-grid:not([data-players="3"]):not([data-players="4"])
+  .p-card:nth-last-child(2):first-child,
+.score-grid:not([data-players="3"]):not([data-players="4"])
+  .p-card:nth-last-child(2):first-child
+  ~ .p-card {
+  max-width: 500px;
+  flex: 1 1 300px;
+}
+
+/* FOCUS-MODUS: 3 ODER 4 SPIELER (Kompakt & Symmetrisch) */
+.score-grid[data-players="3"],
+.score-grid[data-players="4"] {
+  grid-template-columns: 1.2fr 1fr;
+  /* Teilt den Platz rechts exakt in 3 gleich große Zeilen auf */
+  grid-template-rows: repeat(3, 1fr);
+  /* Dies streckt die linke Karte über die gesamte Höhe der rechten Zeilen */
+  align-items: stretch;
+  gap: 4px;
+}
+
+.p-card {
+  border-radius: 12px;
+  padding: 10px;
+  min-width: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Zentriert Inhalt vertikal */
+  position: relative;
+  transition: all 0.3s ease-in-out;
+  color: white;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
+  height: auto; /* Erlaubt dem Grid die Höhe zu steuern */
+}
+
+/* RECHTE KARTEN (Inaktiv): Schmale Balken */
+.score-grid[data-players="3"] .p-card:not(.active-turn),
+.score-grid[data-players="4"] .p-card:not(.active-turn) {
+  grid-column: 2;
+  min-height: 35px !important;
+  max-height: 45px;
+  padding: 4px 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Unnötige Details rechts ausblenden */
+.score-grid[data-players="3"] .p-card:not(.active-turn) .p-footer-stats,
+.score-grid[data-players="4"] .p-card:not(.active-turn) .p-footer-stats,
+.score-grid[data-players="3"] .p-card:not(.active-turn) .p-leg-score,
+.score-grid[data-players="4"] .p-card:not(.active-turn) .p-leg-score,
+.score-grid[data-players="3"] .p-card:not(.active-turn) .checkout-hint,
+.score-grid[data-players="4"] .p-card:not(.active-turn) .checkout-hint {
+  display: none !important;
+}
+
+/* Score der kleinen Karten rechts */
+.score-grid[data-players="3"] .p-card:not(.active-turn) .p-score,
+.score-grid[data-players="4"] .p-card:not(.active-turn) .p-score {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+/* LINKE KARTE (Aktiv): Symmetrisch an die rechte Spalte angepasst */
+.score-grid[data-players="3"] .p-card.active-turn,
+.score-grid[data-players="4"] .p-card.active-turn {
+  grid-column: 1 !important;
+  /* Streckt die Karte über genau 3 Zeilen (Symmetrie zur rechten Seite) */
+  grid-row: 1 / span 3 !important;
+  height: 100%; /* Füllt die 3 Zeilen komplett aus */
+  min-height: auto; /* Keine feste Mindesthöhe mehr, damit sie nicht überlappt */
+  padding: 15px;
+}
+
+/* 5. Numpad-Bereich: Klebt fest am unteren Rand */
+.arena-input-section {
+  background: rgba(13, 13, 13, 0.95);
+  border-top: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 10px 10px 20px 10px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: auto; /* Drückt die Eingabe nach ganz unten */
+}
+
+/* --- OPTIK & STATI --- */
+.p-card.active-turn {
+  background: var(--btn-grad);
+  color: #000;
+  border: 1.5px solid var(--bright-gold);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+  transform: scale(1.01);
+  z-index: 2;
+  filter: brightness(1) !important;
+  opacity: 1 !important;
+}
+
+.p-card:not(.active-turn) {
+  filter: brightness(0.4);
+  opacity: 0.6;
+}
+
+.p-score {
+  font-size: clamp(1.8rem, 8vw, 3.5rem);
+  font-weight: 900;
+  margin: auto 0;
+  line-height: 1;
+  color: inherit;
+}
+
+.p-name-tag {
+  font-weight: 900;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.p-leg-score {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 900;
+  font-size: 0.8rem;
+}
+
+/* STATUS-INFO (Mitte) */
+.turn-status-bar {
+  text-align: center;
+  font-weight: 900;
+  font-size: clamp(0.9rem, 4vw, 1.3rem);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin: 10px 0;
+  flex-shrink: 0; /* Verhindert, dass der Text zusammengedrückt wird */
+}
+
+/* EINGABE-BEREICH (Unten) */
+.bottom-input-panel {
+  /* WICHTIG: margin-top: auto entfernen oder auf einen festen Wert setzen */
+  margin-top: 0;
+  padding: 10px 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.input-container-white {
+  background: #fff;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  /* Padding angepasst: Links Platz für Undo, Rechts bündig für den OK-Button */
+  padding: 0 5px 0 15px;
+  gap: 0; /* Gap entfernt, damit die Elemente nahtlos aneinanderliegen */
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+  width: 85%;
+  max-width: 380px;
+  height: 60px; /* Feste Höhe für ein einheitliches Bild */
+  transition: transform 0.2s ease;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-sizing: border-box;
+}
+
+/* Optional: Kleiner Effekt beim Tippen */
+.input-container-white:focus-within {
+  transform: translateY(-2px); /* Hebt sich leicht an */
+  box-shadow: 0 15px 35px rgba(212, 175, 55, 0.2); /* Goldener Schein */
+}
+
+.input-container-white input {
+  flex: 1;
+  border: none !important;
+  background: transparent !important;
+  color: #000 !important;
+  font-size: 1.8rem; /* Größer für den "Pro"-Look */
+  font-weight: 900;
+  text-align: center;
+  outline: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  min-width: 0;
+}
+
+.send-btn-green {
+  /* Nutze hier deinen Gold-Verlauf für den "Pro"-Look */
+  background: var(--btn-grad, #2ecc71);
+  color: #000; /* Schwarz auf Gold liest sich besser */
+  border: none;
+  padding: clamp(10px, 3vw, 12px) clamp(15px, 5vw, 25px);
+  border-radius: 40px;
+  font-weight: 900;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-size: clamp(0.7rem, 2.5vw, 0.85rem);
+  transition: opacity 0.2s;
+}
+
+.send-btn-green:active {
+  opacity: 0.8;
+  transform: scale(0.95);
+}
+
+/* Media Query für ganz kleine Handys */
+@media (max-height: 600px) {
+  .p-card {
+    min-height: 100px;
+  }
+  .p-score {
+    font-size: 2.5rem;
+  }
+  .turn-status-bar {
+    margin: 5px 0;
+    font-size: 0.8rem;
+  }
+}
+.undo-btn {
+  cursor: pointer;
+  font-size: 1.4rem;
+  padding-right: 10px;
+  user-select: none;
+  transition: transform 0.1s;
+}
+
+.undo-btn:active {
+  transform: scale(0.8);
+}
+.checkout-hint {
+  /* Sorgt dafür, dass der Balken nur so breit wie der Text ist */
+  display: inline-block;
+  width: fit-content;
+  align-self: flex-start; /* Verhindert das Strecken in Flex-Containern */
+
+  padding: 4px 12px;
+  border-radius: 8px;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+
+  /* Platzhalter, damit das Layout nicht springt */
+  min-height: 24px;
+  background: transparent;
+  color: transparent;
+}
+
+/* Sichtbar machen, wenn Text enthalten ist */
+.checkout-hint:not(:empty) {
+  background: rgba(0, 0, 0, 0.25) !important;
+  color: white !important;
+}
+
+/* Im aktiven (goldenen) Zustand die Farben anpassen */
+.active-turn .checkout-hint:not(:empty) {
+  background: rgba(0, 0, 0, 0.1) !important;
+  color: rgba(0, 0, 0, 0.8) !important;
+}
+/* --- NEUES SETUP STYLING --- */
+
+.setup-box {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 25px;
+  padding: 30px;
+  margin: 10px auto;
+  max-width: 450px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.setup-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.setup-title {
+  color: var(--gold);
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.setup-subtitle {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+.input-field-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-field-group label {
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  margin-left: 5px;
+  letter-spacing: 1px;
+}
+
+.input-field-group input,
+.input-field-group select {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 15px;
+  padding: 14px 18px;
+  color: white !important;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.input-field-group input:focus {
+  outline: none;
+  border-color: var(--gold) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+}
+
+.vs-divider-line {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 5px 0 25px 0;
+  color: rgba(255, 255, 255, 0.2);
+  font-weight: 900;
+  font-style: italic;
+}
+
+.vs-divider-line::before,
+.vs-divider-line::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vs-divider-line span {
+  padding: 0 15px;
+}
+
+/* Erzeunug einer dunklen Hintergrundfarbe für die Auswahl-Liste */
+#start-score option {
+  background-color: #1a1a1a !important; /* Ein sehr dunkles Grau/Schwarz */
+  color: white !important; /* Weiße Schrift */
+  padding: 10px;
+}
+
+/* Speziell für mobile Geräte und Chrome/Safari */
+select#start-score {
+  appearance: none; /* Entfernt den Standard-Browser-Look */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg%20xmlns%3D"http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg"%20width%3D"292.4"%20height%3D"292.4"><path%20fill%3D"%23D4AF37"%20d%3D"M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z"%2F><%2Fsvg>');
+  background-repeat: no-repeat;
+  background-position: right 15px top 50%;
+  background-size: 12px auto;
+  padding-right: 40px; /* Platz für den kleinen Pfeil */
+}
+.input-row {
+  display: flex;
+  gap: 10px;
+}
+
+.remove-btn {
+  position: absolute;
+  right: 10px; /* Abstand vom rechten Rand des Inputs */
+  background: rgba(255, 0, 0, 0.15); /* Dezentes Rot */
+  border: none;
+  color: #ff4d4d;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  transition: all 0.2s;
+  z-index: 2; /* Damit es über dem Input liegt */
+}
+
+.add-player-wrapper {
+  margin: 10px 0 25px 0;
+  text-align: center;
+}
+
+.add-btn {
+  background: transparent;
+  border: 1px dashed var(--gold);
+  color: var(--gold);
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-weight: 800;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-btn:hover {
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.add-btn span {
+  font-size: 1.1rem;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+.exit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  color: var(--gold, #d4af37); /* Nutzt deine Gold-Variable oder Standard */
+  transition: all 0.3s ease;
+  padding: 5px;
+}
+
+.exit-btn svg {
+  width: 26px;
+  height: 26px;
+  /* Ein leichter Rot-Touch beim Exit sieht oft gut aus, oder bleib bei Gold */
+  stroke: #ff4d4d;
+}
+
+.exit-btn:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+/* Sicherstellen, dass die Header-Elemente nicht springen */
+.modern-burger-btn,
+.exit-btn {
+  min-width: 40px;
+}
+/* --- NUMPAD DESIGN (UNTER DER LEISTE) --- */
+.arena-input-section {
+  background: rgba(13, 13, 13, 0.95);
+  border-top: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 15px 15px 30px 15px;
+  border-radius: 30px 30px 0 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.numpad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+.numpad-grid button {
+  height: 55px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+/* Klick-Effekt: Knopf leuchtet kurz gold auf */
+.numpad-grid button:active {
+  background: var(--gold);
+  color: #000;
+  transform: scale(0.95);
+}
+
+.btn-clear {
+  color: var(--danger) !important;
+}
+
+/* Das Eingabefeld soll sich nicht wie ein Textfeld anfühlen */
+#points-input[readonly] {
+  cursor: default;
+  background: transparent;
+}
+/* Container für die runden Icons */
+.player-chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 25px;
+  min-height: 100px;
+}
+
+/* Der einzelne runde Spieler-Chip (jetzt klickbar) */
+.player-chip {
+  position: relative;
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer; /* Zeigt, dass man draufklicken kann */
+  transition: transform 0.2s ease;
+  animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.player-chip:active {
+  transform: scale(0.95);
+}
+
+.chip-avatar {
+  width: 60px;
+  height: 60px;
+  background: var(--btn-grad);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #000;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 8px;
+  position: relative;
+}
+
+/* Spezielles Styling für den Plus-Chip */
+.player-chip.add-starter .chip-avatar {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--gold);
+  border: 2px dashed rgba(212, 175, 55, 0.3);
+  box-shadow: none;
+}
+
+.chip-name {
+  font-size: 0.65rem; /* Etwas kleiner (vorher meist 0.75rem oder 0.8rem) */
+  font-weight: 700;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-top: 4px;
+
+  /* Diese 4 Zeilen sorgen dafür, dass lange Namen mit "..." abgekürzt werden */
+  max-width: 85px; /* Begrenzt die Breite auf die Chip-Größe */
+  white-space: nowrap; /* Verhindert Zeilenumbruch */
+  overflow: hidden; /* Versteckt den Überlauf */
+  text-overflow: ellipsis; /* Fügt die drei Punkte (...) ein */
+
+  text-align: center;
+}
+
+/* Das kleine X zum Entfernen (bleibt, damit man löschen kann) */
+.remove-chip {
+  position: absolute;
+  top: -5px;
+  right: 5px;
+  width: 22px;
+  height: 22px;
+  background: var(--danger);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  border: 2px solid var(--dark-bg);
+  z-index: 5;
+}
+
+/* --- NAME PROMPT OVERLAY (Das Aufpopp-Fenster) --- */
+.name-prompt-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.prompt-card {
+  background: var(--card-bg);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 25px;
+  border-radius: 20px;
+  width: 85%;
+  max-width: 350px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.prompt-card h3 {
+  color: #fff;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.prompt-card input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 12px 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  outline: none;
+  font-size: 1rem;
+}
+
+.prompt-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.prompt-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.btn-confirm {
+  background: var(--btn-grad);
+  color: #000;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* --- HOST/USER PROFIL STYLING --- */
+
+/* Der Avatar-Container für den eingeloggten User */
+.host-avatar {
+  position: relative;
+  border: 2px solid var(--bright-gold) !important; /* Goldener Rand für dich */
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+  background: var(
+    --btn-grad
+  ) !important; /* Falls kein Bild da ist, goldener Hintergrund */
+}
+
+/* Das Profilbild aus Firebase */
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover; /* Verhindert, dass das Bild verzerrt wird */
+  display: block;
+}
+
+/* Falls kein Bild da ist, der Buchstabe (Initial) */
+.avatar-initial {
+  color: #000;
+  font-weight: 900;
+  font-size: 1.5rem;
+}
+
+/* Das kleine Zahnrad-Icon oben rechts auf deinem Chip */
+.profile-settings-icon {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 20px;
+  height: 20px;
+  background: var(--bright-gold);
+  color: #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  border: 2px solid var(--dark-bg);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+/* Name-Tag unter deinem Profil */
+.host-user .chip-name {
+  max-width: 100px;
+  color: #fff; /* Damit man dein "(Du)" besser liest */
+}
+
+/* --- ANIMATIONEN --- */
+
+/* Damit die Chips beim Laden oder Hinzufügen schön "reinschlackern" */
+@keyframes popIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.player-chip {
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.checkout-options {
+  display: flex;
+  gap: 15px;
+}
+
+.checkout-options button {
+  background: var(--gold);
+  color: #000;
+  border: none;
+  padding: 15px 25px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  flex: 1;
+  transition: transform 0.2s;
+}
+
+.checkout-options button:active {
+  transform: scale(0.9);
+}
+
+/* --- MATCH ROWS & SCORING --- */
+
+.match-row {
+  padding: 12px 5px;
+  display: grid;
+  /* Wir geben den Namen 1fr, aber fügen einen festen Gap ein */
+  grid-template-columns: 1fr 110px 1fr;
+  align-items: center;
+  border-bottom: 1px solid #222;
+  /* Gap erhöht: Das ist die "Todeszone", in die kein Name darf */
+  gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.match-row > div:first-child {
+  text-align: right;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  /* Rechter Abstand zur gelben Box */
+  padding-right: 10px;
+}
+
+.match-row > div:last-child {
+  text-align: left;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  /* Linker Abstand zur gelben Box */
+  padding-left: 10px;
+}
+.score-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  width: 110px;
+  margin: 0 auto;
+}
+
+.score-box input {
+  width: 42px;
+  height: 38px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--bright-gold);
+  background: #000;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.score-box input:focus {
+  border-color: var(--bright-gold) !important;
+  /* Strahlendes Gold für die Scores */
+  box-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
+  /* Etwas kräftigerer Schein */
+  background: #0a0a0a;
+  /* Ganz leichtes Aufhellen des Schwarz */
+  outline: none;
+  /* Entfernt Standard-Browser-Rahmen */
+  transition: all 0.2s ease;
+  /* Schnelle, knackige Reaktion */
+}
+.rec-btn {
+  background: var(--btn-grad);
+  color: #000;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-weight: bold;
+  font-size: 0.7rem;
+  cursor: pointer;
+  margin-bottom: 4px;
+  display: block;
+  width: 100%;
+}
+
+.rec-num {
+  background: #000;
+  color: var(--bright-gold);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.9rem;
+  font-weight: 900;
+  cursor: pointer;
+  border: 1px solid #333;
+}
+
+#ko-container .section-title {
+  color: var(--gold) !important;
+  margin-top: 40px !important;
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+  padding-bottom: 8px;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+#ko-container .section-title:first-of-type {
+  margin-top: 10px !important;
+}
