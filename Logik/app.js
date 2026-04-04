@@ -157,3 +157,15 @@ window.goBack = () => {
     window.showView("view-dashboard");
   }
 };
+// --- DASHBOARD NAVIGATION ---
+// Wartet, bis das Dokument geladen ist, und verknüpft die Kachel
+document.addEventListener("DOMContentLoaded", () => {
+  const tournamentTile = document.getElementById("btn-dashboard-tournaments");
+  if (tournamentTile) {
+    tournamentTile.addEventListener("click", () => {
+      // Nutzt deine bestehende Funktion, um zum Creator/Manager zu wechseln
+      window.showView("view-creator");
+      console.log("Navigation: Dashboard -> Event Manager");
+    });
+  }
+});
