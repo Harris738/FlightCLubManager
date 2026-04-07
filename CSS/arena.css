@@ -926,3 +926,54 @@ select#start-score {
 #ko-container .section-title:first-of-type {
   margin-top: 10px !important;
 }
+
+/* ============================================================
+   TABLET OPTIMIERUNG (Breiter als 768px)
+   ============================================================ */
+@media (min-width: 768px) {
+  /* 1. Das gesamte Arena-Layout entspannen */
+  #counter-arena {
+    padding: 70px 20px 10px 20px; /* Mehr Platz zu den Seiten */
+    gap: 15px; /* Mehr Abstand zwischen den Elementen */
+  }
+
+  /* 2. Die Kartenhöhe begrenzen, damit unten Platz bleibt */
+  .score-grid:not([data-players="3"]):not([data-players="4"])
+    .p-card:only-child {
+    max-height: 300px !important;
+    max-width: 550px !important; /* Auf Tablets darf die Karte etwas breiter sein */
+  }
+
+  /* 3. Das Numpad auf Tablets schmaler machen (damit es nicht über die ganze Breite geht) */
+  .arena-input-section {
+    max-width: 500px;
+    margin: 0 auto; /* Mittig ausrichten */
+    border-radius: 20px; /* Abgerundete Ecken auch an den Seiten */
+    padding: 15px;
+    background: rgba(13, 13, 13, 0.8);
+  }
+
+  /* 4. Tasten etwas flacher machen, um vertikalen Platz zu sparen */
+  .numpad-grid button {
+    height: 60px !important;
+    font-size: 1.6rem;
+  }
+
+  /* 5. Die Eingabezeile (OK-Button Bereich) kompakt halten */
+  .input-container-white {
+    max-width: 450px;
+    height: 55px;
+  }
+}
+
+/* SPEZIALFALL: Tablet im Querformat (Landscape) */
+@media (min-width: 768px) and (orientation: landscape) {
+  .score-grid:not([data-players="3"]):not([data-players="4"])
+    .p-card:only-child {
+    max-height: 220px !important; /* Noch flacher im Querformat */
+  }
+
+  .numpad-grid button {
+    height: 45px !important; /* Sehr flache Tasten, damit das Numpad nicht schiebt */
+  }
+}
