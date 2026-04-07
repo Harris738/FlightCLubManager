@@ -56,10 +56,12 @@
 .score-grid[data-players="4"] {
   grid-template-columns: 1.2fr 1fr;
   /* Teilt den Platz rechts exakt in 3 gleich große Zeilen auf */
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-rows: repeat(3, auto);
   /* Dies streckt die linke Karte über die gesamte Höhe der rechten Zeilen */
-  align-items: stretch;
-  gap: 4px;
+  /* 'align-content' sorgt dafür, dass die gesamte rechte Spalte oben klebt */
+  align-content: start;
+  align-items: start;
+  gap: 8px; /* Ein kleiner, sauberer Abstand zwischen den Karten */
 }
 
 .p-card {
@@ -76,7 +78,7 @@
   border: 1px solid rgba(212, 175, 55, 0.1);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
   box-sizing: border-box;
-  height: auto; /* Erlaubt dem Grid die Höhe zu steuern */
+  height: 250px; /* Erlaubt dem Grid die Höhe zu steuern */
 }
 
 /* RECHTE KARTEN (Inaktiv): Schmale Balken */
@@ -108,15 +110,24 @@
   margin: 0;
 }
 
-/* LINKE KARTE (Aktiv): Symmetrisch an die rechte Spalte angepasst */
+/* LINKE KARTE (Aktiv): Jetzt füllt sie den Platz links komplett aus */
 .score-grid[data-players="3"] .p-card.active-turn,
 .score-grid[data-players="4"] .p-card.active-turn {
   grid-column: 1 !important;
-  /* Streckt die Karte über genau 3 Zeilen (Symmetrie zur rechten Seite) */
+  /* Streckt die Karte über die gesamte Höhe der rechten 3 Zeilen */
   grid-row: 1 / span 3 !important;
-  height: 100%; /* Füllt die 3 Zeilen komplett aus */
-  min-height: auto; /* Keine feste Mindesthöhe mehr, damit sie nicht überlappt */
+
+  /* ÄNDERUNG: 'height: 100%' statt 60%, damit sie die volle Grid-Höhe nutzt */
+  height: 100% !important;
+
+  /* ÄNDERUNG: Eine Mindesthöhe gibt ihr wieder Präsenz */
+  min-height: 250px !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-around !important; /* Verteilt Name und Score schön */
   padding: 15px;
+  align-self: stretch; /* Zwingt die Karte, sich von oben bis unten zu dehnen */
 }
 
 /* 5. Numpad-Bereich: Klebt fest am unteren Rand */
@@ -147,7 +158,7 @@
 }
 
 .p-score {
-  font-size: clamp(1.8rem, 8vw, 3.5rem);
+  font-size: clamp(4.5rem, 8vw, 3.5rem);
   font-weight: 900;
   margin: auto 0;
   line-height: 1;
@@ -286,7 +297,7 @@
   padding: 4px 12px;
   border-radius: 8px;
   margin-top: 8px;
-  font-size: 0.85rem;
+  font-size: 1.25rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1px;

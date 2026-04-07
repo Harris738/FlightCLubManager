@@ -94,24 +94,48 @@ window.toggleSidebar = function () {
 };
 
 window.showView = function (viewId) {
+  // 1. Check: Wenn der User zum Setup will, aber ein Spiel läuft -> Arena erzwingen
+  // 'dartGame' muss deine globale Variable sein, die das Spiel hält
+  if (
+    viewId === "view-counter" &&
+    typeof dartGame !== "undefined" &&
+    dartGame.players &&
+    dartGame.players.length > 0
+  ) {
+    viewId = "counter-arena";
+  }
+
+  // 2. Alle Standard-Views verstecken
   const views = document.querySelectorAll(".view");
   views.forEach((v) => {
     v.classList.remove("active");
     v.style.display = "none";
   });
 
+  // 3. SPEZIELL: Dart-Arena und Setup explizit verstecken
+  const arena = document.getElementById("counter-arena");
+  const setup = document.getElementById("view-setup");
+  if (arena) arena.style.display = "none";
+  if (setup) setup.style.display = "none";
+
+  // 4. Ziel-View anzeigen
   const target = document.getElementById(viewId);
   if (target) {
     target.classList.add("active");
-    target.style.display = "block";
-  }
-  // --- NEU: DATEN FÜR STATISTIK LADEN ---
-  if (viewId === "view-stats") {
-    if (typeof window.loadProStats === "function") {
-      window.loadProStats();
+    // WICHTIG: Arena braucht FLEX für das Layout, alles andere BLOCK
+    if (viewId === "counter-arena") {
+      target.style.display = "flex";
+    } else {
+      target.style.display = "block";
     }
   }
 
+  // --- DATEN FÜR STATISTIK LADEN ---
+  if (viewId === "view-stats" && typeof window.loadProStats === "function") {
+    window.loadProStats();
+  }
+
+  // --- HEADER TITEL LOGIK ---
   const headerTitle = document.getElementById("current-view-title");
   if (headerTitle) {
     const titles = {
@@ -133,10 +157,12 @@ window.showView = function (viewId) {
     headerTitle.innerHTML = titles[viewId] || "FLIGHTCLUB PRO";
   }
 
+  // --- BUTTON LOGIK ---
   const menuBtn = document.getElementById("menu-toggle");
   const backBtn = document.getElementById("header-back-btn");
   const abortBtn = document.getElementById("abort-btn");
 
+  // Im Spiel (Arena) verstecken wir das Sandwich-Menü und zeigen den Abbrechen-Button
   if (menuBtn)
     menuBtn.style.display =
       viewId === "view-setup" ||
@@ -144,12 +170,15 @@ window.showView = function (viewId) {
       viewId === "counter-arena"
         ? "none"
         : "flex";
+
   if (backBtn)
     backBtn.style.display =
       viewId === "view-setup" || viewId === "view-event" ? "flex" : "none";
+
   if (abortBtn)
     abortBtn.style.display = viewId === "counter-arena" ? "flex" : "none";
 
+  // --- SIDEBAR RESET ---
   const sidebar = document.getElementById("sidebar");
   const overlay = document.getElementById("sidebar-overlay");
   if (sidebar) sidebar.classList.remove("active");
